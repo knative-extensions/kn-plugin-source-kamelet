@@ -24,7 +24,7 @@ var Version string
 var BuildDate string
 var GitRevision string
 
-// NewVersionCommand implements 'kn source kamelet version' command
+// NewVersionCommand implements 'kn-source-kamelet version' command
 func NewVersionCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",

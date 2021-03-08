@@ -15,6 +15,7 @@
 package root
 
 import (
+	"context"
 	"github.com/spf13/cobra"
 	"knative.dev/kn-plugin-source-kamelet/internal/command"
 )
@@ -28,7 +29,15 @@ func NewSourceKameletCommand() *cobra.Command {
 		Long:  `Plugin manages Kamelets and KameletBindings as Knative eventing sources.`,
 	}
 
-	rootCmd.AddCommand(command.NewListCommand())
+	ctx, cancel := context.WithCancel(context.Background())
+
+	p := &command.KameletPluginParams{
+		Context:       ctx,
+		ContextCancel: cancel,
+	}
+	p.Initialize()
+
+	rootCmd.AddCommand(command.NewListCommand(p))
 	rootCmd.AddCommand(command.NewVersionCommand())
 
 	return rootCmd
