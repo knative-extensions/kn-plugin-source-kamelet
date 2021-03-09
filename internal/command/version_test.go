@@ -19,7 +19,7 @@ import (
 	"fmt"
 	"testing"
 
-	"gotest.tools/assert"
+	"gotest.tools/v3/assert"
 )
 
 var versionOutputTemplate = `Version:      %s
