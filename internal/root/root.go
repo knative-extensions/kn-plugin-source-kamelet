@@ -37,7 +37,7 @@ func NewSourceKameletCommand() *cobra.Command {
 	}
 	p.Initialize()
 
-	rootCmd.AddCommand(command.NewListCommand(p))
+	rootCmd.AddCommand(command.NewListTypesCommand(p))
 	rootCmd.AddCommand(command.NewVersionCommand())
 
 	return rootCmd

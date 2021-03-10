@@ -28,20 +28,20 @@ import (
 )
 
 var listExample = `
-  # List all Kamelets
-  kn-source-kamelet list
+  # List available Kamelets
+  kn-source-kamelet list-types
 
-  # List all Kamelets in JSON output format
-  kn-source-kamelet list -o json`
+  # List available Kamelets in YAML output format
+  kn-source-kamelet list-types -o yaml`
 
-// NewListCommand implements 'kn-source-kamelet list' command
-func NewListCommand(p *KameletPluginParams) *cobra.Command {
+// NewListTypesCommand implements 'kn-source-kamelet list' command
+func NewListTypesCommand(p *KameletPluginParams) *cobra.Command {
 	kameletListFlags := flags.NewListPrintFlags(ListHandlers)
 
 	cmd := &cobra.Command{
-		Use:     "list",
-		Short:   "List available Kamelet sources",
-		Aliases: []string{"ls"},
+		Use:     "list-types",
+		Short:   "List available Kamelet source types",
+		Aliases: []string{"lst"},
 		Example: listExample,
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			namespace, err := p.GetNamespace(cmd)

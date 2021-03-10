@@ -35,9 +35,9 @@ func TestListSetup(t *testing.T) {
 		Context: context.TODO(),
 	}
 
-	listCmd := NewListCommand(&p)
-	assert.Equal(t, listCmd.Use, "list")
-	assert.Equal(t, listCmd.Short, "List available Kamelet sources")
+	listCmd := NewListTypesCommand(&p)
+	assert.Equal(t, listCmd.Use, "list-types")
+	assert.Equal(t, listCmd.Short, "List available Kamelet source types")
 	assert.Assert(t, listCmd.RunE != nil)
 }
 
@@ -137,9 +137,9 @@ func runListCmd(c *client.MockKameletClient, options ...string) (string, error) 
 		},
 	}
 
-	listCmd, _, output := commands.CreateSourcesTestKnCommand(NewListCommand(&p), p.KnParams)
+	listCmd, _, output := commands.CreateSourcesTestKnCommand(NewListTypesCommand(&p), p.KnParams)
 
-	args := []string{"list"}
+	args := []string{"list-types"}
 	args = append(args, options...)
 	listCmd.SetArgs(args)
 	err := listCmd.Execute()
