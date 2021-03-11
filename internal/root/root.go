@@ -16,6 +16,7 @@ package root
 
 import (
 	"context"
+
 	"github.com/spf13/cobra"
 	"knative.dev/kn-plugin-source-kamelet/internal/command"
 )
