@@ -18,6 +18,8 @@ package client
 
 import (
 	"context"
+	"testing"
+
 	camelkapis "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	camelkv1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1"
 	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
@@ -27,7 +29,6 @@ import (
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/rest"
 	"knative.dev/client/pkg/util/mock"
-	"testing"
 )
 
 // MockKameletClient is a combine of test object and recorder

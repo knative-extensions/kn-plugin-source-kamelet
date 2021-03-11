@@ -16,6 +16,7 @@ package command
 
 import (
 	"fmt"
+
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"knative.dev/client/pkg/kn/commands"
