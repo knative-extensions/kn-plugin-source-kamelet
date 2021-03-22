@@ -23,7 +23,6 @@ import (
 
 	camelkapis "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"knative.dev/client/pkg/kn/commands"
 	"knative.dev/client/pkg/util"
 	"knative.dev/kn-plugin-source-kamelet/internal/client"
@@ -31,7 +30,7 @@ import (
 	"gotest.tools/v3/assert"
 )
 
-func TestListSetup(t *testing.T) {
+func TestListTypesSetup(t *testing.T) {
 	p := KameletPluginParams{
 		Context: context.TODO(),
 	}
@@ -42,7 +41,7 @@ func TestListSetup(t *testing.T) {
 	assert.Assert(t, listCmd.RunE != nil)
 }
 
-func TestListOutput(t *testing.T) {
+func TestListTypesOutput(t *testing.T) {
 	mockClient := client.NewMockKameletClient(t)
 	recorder := mockClient.Recorder()
 
@@ -52,7 +51,7 @@ func TestListOutput(t *testing.T) {
 	kameletList := &camelkapis.KameletList{Items: []camelkapis.Kamelet{*kamelet1, *kamelet2, *kamelet3}}
 	recorder.List(kameletList, nil)
 
-	output, err := runListCmd(mockClient)
+	output, err := runListTypesCmd(mockClient)
 	assert.NilError(t, err)
 
 	outputLines := strings.Split(output, "\n")
@@ -65,12 +64,12 @@ func TestListOutput(t *testing.T) {
 	recorder.Validate()
 }
 
-func TestListEmpty(t *testing.T) {
+func TestListTypesEmpty(t *testing.T) {
 	mockClient := client.NewMockKameletClient(t)
 	recorder := mockClient.Recorder()
 
 	recorder.List(&camelkapis.KameletList{}, nil)
-	output, err := runListCmd(mockClient)
+	output, err := runListTypesCmd(mockClient)
 	assert.NilError(t, err)
 
 	assert.Assert(t, util.ContainsAll(output, "No", "resources", "found"))
@@ -78,7 +77,7 @@ func TestListEmpty(t *testing.T) {
 	recorder.Validate()
 }
 
-func TestListNoReadyReasonOutput(t *testing.T) {
+func TestListTypesNoReadyReasonOutput(t *testing.T) {
 	mockClient := client.NewMockKameletClient(t)
 	recorder := mockClient.Recorder()
 
@@ -94,7 +93,7 @@ func TestListNoReadyReasonOutput(t *testing.T) {
 	kameletList := &camelkapis.KameletList{Items: []camelkapis.Kamelet{*kamelet1, *kamelet2, *kamelet3}}
 	recorder.List(kameletList, nil)
 
-	output, err := runListCmd(mockClient)
+	output, err := runListTypesCmd(mockClient)
 	assert.NilError(t, err)
 
 	outputLines := strings.Split(output, "\n")
@@ -107,7 +106,7 @@ func TestListNoReadyReasonOutput(t *testing.T) {
 	recorder.Validate()
 }
 
-func TestListAllNamespace(t *testing.T) {
+func TestListTypesAllNamespace(t *testing.T) {
 	mockClient := client.NewMockKameletClient(t)
 	recorder := mockClient.Recorder()
 
@@ -117,7 +116,7 @@ func TestListAllNamespace(t *testing.T) {
 	kameletList := &camelkapis.KameletList{Items: []camelkapis.Kamelet{*kamelet1, *kamelet2, *kamelet3}}
 	recorder.List(kameletList, nil)
 
-	output, err := runListCmd(mockClient, "--all-namespaces")
+	output, err := runListTypesCmd(mockClient, "--all-namespaces")
 	assert.NilError(t, err)
 
 	outputLines := strings.Split(output, "\n")
@@ -129,7 +128,7 @@ func TestListAllNamespace(t *testing.T) {
 	recorder.Validate()
 }
 
-func runListCmd(c *client.MockKameletClient, options ...string) (string, error) {
+func runListTypesCmd(c *client.MockKameletClient, options ...string) (string, error) {
 	p := KameletPluginParams{
 		KnParams: &commands.KnParams{},
 		Context:  context.TODO(),
@@ -146,32 +145,4 @@ func runListCmd(c *client.MockKameletClient, options ...string) (string, error) 
 	err := listCmd.Execute()
 
 	return output.String(), err
-}
-
-func createKamelet(kameletName string) *camelkapis.Kamelet {
-	return createKameletInNamespace(kameletName, "default")
-}
-
-func createKameletInNamespace(kameletName string, namespace string) *camelkapis.Kamelet {
-	return &camelkapis.Kamelet{
-		TypeMeta: v1.TypeMeta{
-			APIVersion: camelkapis.SchemeGroupVersion.String(),
-			Kind:       camelkapis.KameletKind,
-		},
-		ObjectMeta: v1.ObjectMeta{
-			Namespace:         namespace,
-			Name:              kameletName,
-			CreationTimestamp: v1.Now(),
-		},
-		Spec: camelkapis.KameletSpec{},
-		Status: camelkapis.KameletStatus{
-			Phase: camelkapis.KameletPhaseReady,
-			Conditions: []camelkapis.KameletCondition{
-				{
-					Type:   "Ready",
-					Status: "True",
-				},
-			},
-		},
-	}
 }
