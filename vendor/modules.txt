@@ -691,7 +691,7 @@ k8s.io/kube-openapi/pkg/util/proto
 k8s.io/utils/buffer
 k8s.io/utils/integer
 k8s.io/utils/trace
-# knative.dev/client v0.21.1-0.20210316000941-6a4f308e5e73
+# knative.dev/client v0.21.1-0.20210319143953-43b669fe9fb6
 ## explicit
 knative.dev/client/pkg/dynamic
 knative.dev/client/pkg/errors
@@ -736,7 +736,7 @@ knative.dev/eventing/pkg/client/clientset/versioned/typed/eventing/v1beta1
 knative.dev/eventing/pkg/client/clientset/versioned/typed/messaging/v1beta1
 knative.dev/eventing/pkg/client/clientset/versioned/typed/sources/v1alpha2
 knative.dev/eventing/pkg/client/clientset/versioned/typed/sources/v1alpha2/fake
-# knative.dev/hack v0.0.0-20210309141825-9b73a256fd9a
+# knative.dev/hack v0.0.0-20210325223819-b6ab329907d3
 ## explicit
 knative.dev/hack
 # knative.dev/networking v0.0.0-20210311190926-430a689490e6
