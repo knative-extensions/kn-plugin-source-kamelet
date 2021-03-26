@@ -691,7 +691,7 @@ k8s.io/kube-openapi/pkg/util/proto
 k8s.io/utils/buffer
 k8s.io/utils/integer
 k8s.io/utils/trace
-# knative.dev/client v0.21.1-0.20210319143953-43b669fe9fb6
+# knative.dev/client v0.21.1-0.20210326162320-c62842355a53
 ## explicit
 knative.dev/client/pkg/dynamic
 knative.dev/client/pkg/errors
