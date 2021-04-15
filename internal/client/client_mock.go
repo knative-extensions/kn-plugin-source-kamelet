@@ -128,8 +128,15 @@ func (c *MockKameletClient) DeleteCollection(ctx context.Context, opts v1.Delete
 	panic("implement me")
 }
 
+// Get records a call for GetKamelet with the expected result and error (nil if none)
+func (sr *KameletRecorder) Get(kamelet *camelkapis.Kamelet, err error) {
+	sr.r.Add("Get", nil, []interface{}{kamelet, err})
+}
+
+// Get performs a previously recorded action
 func (c *MockKameletClient) Get(ctx context.Context, name string, opts v1.GetOptions) (*camelkapis.Kamelet, error) {
-	panic("implement me")
+	call := c.recorder.r.VerifyCall("Get")
+	return call.Result[0].(*camelkapis.Kamelet), mock.ErrorOrNil(call.Result[1])
 }
 
 func (c *MockKameletClient) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {

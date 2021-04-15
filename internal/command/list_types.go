@@ -1,22 +1,25 @@
-// Copyright © 2020 The Knative Authors
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+/*
+ * Copyright © 2021 The Knative Authors
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package command
 
 import (
 	"fmt"
 
+	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"knative.dev/client/pkg/kn/commands"
@@ -35,7 +38,7 @@ var listExample = `
   # List available Kamelets in YAML output format
   kn-source-kamelet list-types -o yaml`
 
-// NewListTypesCommand implements 'kn-source-kamelet list' command
+// NewListTypesCommand implements 'kn-source-kamelet list-types' command
 func NewListTypesCommand(p *KameletPluginParams) *cobra.Command {
 	kameletListFlags := flags.NewListPrintFlags(ListHandlers)
 
@@ -81,7 +84,7 @@ func NewListTypesCommand(p *KameletPluginParams) *cobra.Command {
 	return cmd
 }
 
-// ListHandlers handles printing human readable table for `kn-source-kamelet list` command's output
+// ListHandlers handles printing human readable table for `kn-source-kamelet list-types` command's output
 func ListHandlers(h hprinters.PrintHandler) {
 	kameletColumnDefinitions := []metav1beta1.TableColumnDefinition{
 		{Name: "Namespace", Type: "string", Description: "Namespace of the Kamelet instance", Priority: 0},
@@ -152,7 +155,7 @@ func conditionsValue(conditions []camelkv1alpha1.KameletCondition) string {
 // readyCondition returns status of resource's Ready type condition
 func readyCondition(conditions []camelkv1alpha1.KameletCondition) string {
 	for _, condition := range conditions {
-		if condition.Type == "Ready" {
+		if condition.Type == camelkv1alpha1.KameletConditionReady {
 			return string(condition.Status)
 		}
 	}
@@ -163,8 +166,8 @@ func readyCondition(conditions []camelkv1alpha1.KameletCondition) string {
 // reason and message for non ready conditions
 func nonReadyConditionReason(conditions []camelkv1alpha1.KameletCondition) string {
 	for _, condition := range conditions {
-		if condition.Type == "Ready" {
-			if string(condition.Status) == "True" {
+		if condition.Type == camelkv1alpha1.KameletConditionReady {
+			if condition.Status == corev1.ConditionTrue {
 				return ""
 			}
 			if condition.Message != "" {
