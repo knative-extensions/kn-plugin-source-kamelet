@@ -1,6 +1,9 @@
 approvers:
-- nicolaferraro
-- christophd
-# Aliases
-- wg-leads
-- toc
+- technical-oversight-committee
+- knative-release-leads
+- client-writers
+- kn-plugin-source-kamelet-approvers
+
+reviewers:
+- client-writers
+- kn-plugin-source-kamelet-approvers
