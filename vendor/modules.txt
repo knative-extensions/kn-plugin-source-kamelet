@@ -101,7 +101,7 @@ github.com/google/go-containerregistry/pkg/name
 # github.com/google/gofuzz v1.2.0
 github.com/google/gofuzz
 github.com/google/gofuzz/bytesource
-# github.com/google/uuid v1.2.0
+# github.com/google/uuid v1.3.0
 github.com/google/uuid
 # github.com/googleapis/gnostic v0.5.3
 github.com/googleapis/gnostic/compiler
@@ -222,7 +222,7 @@ go.opencensus.io/trace
 go.opencensus.io/trace/internal
 go.opencensus.io/trace/propagation
 go.opencensus.io/trace/tracestate
-# go.uber.org/atomic v1.8.0
+# go.uber.org/atomic v1.9.0
 go.uber.org/atomic
 # go.uber.org/multierr v1.6.0
 go.uber.org/multierr
@@ -235,7 +235,7 @@ go.uber.org/zap/internal/exit
 go.uber.org/zap/zapcore
 # golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a
 golang.org/x/crypto/ssh/terminal
-# golang.org/x/net v0.0.0-20210614182718-04defd469f4e
+# golang.org/x/net v0.0.0-20210726213435-c6fcb2dbf985
 golang.org/x/net/context
 golang.org/x/net/context/ctxhttp
 golang.org/x/net/http/httpguts
@@ -337,7 +337,7 @@ google.golang.org/grpc/serviceconfig
 google.golang.org/grpc/stats
 google.golang.org/grpc/status
 google.golang.org/grpc/tap
-# google.golang.org/protobuf v1.26.0
+# google.golang.org/protobuf v1.27.1
 google.golang.org/protobuf/encoding/protojson
 google.golang.org/protobuf/encoding/prototext
 google.golang.org/protobuf/encoding/protowire
@@ -598,7 +598,7 @@ k8s.io/utils/buffer
 k8s.io/utils/integer
 k8s.io/utils/pointer
 k8s.io/utils/trace
-# knative.dev/client v0.24.1-0.20210721192038-a7df7c76a0d1
+# knative.dev/client v0.24.1-0.20210806165720-1bf6c1207467
 ## explicit
 knative.dev/client/pkg/dynamic
 knative.dev/client/pkg/dynamic/fake
@@ -619,7 +619,7 @@ knative.dev/client/pkg/sources/v1beta2
 knative.dev/client/pkg/util
 knative.dev/client/pkg/util/mock
 knative.dev/client/pkg/wait
-# knative.dev/eventing v0.24.1-0.20210720191312-003a8a2d4ef5
+# knative.dev/eventing v0.24.1-0.20210803173815-5c7b55336efd
 knative.dev/eventing/pkg/apis/config
 knative.dev/eventing/pkg/apis/duck
 knative.dev/eventing/pkg/apis/duck/v1
@@ -645,11 +645,11 @@ knative.dev/eventing/pkg/client/clientset/versioned/typed/sources/v1beta2
 # knative.dev/hack v0.0.0-20210622141627-e28525d8d260
 ## explicit
 knative.dev/hack
-# knative.dev/networking v0.0.0-20210719003653-7390d8cf09e3
+# knative.dev/networking v0.0.0-20210803181815-acdfd41c575c
 knative.dev/networking/pkg
 knative.dev/networking/pkg/apis/networking
 knative.dev/networking/pkg/apis/networking/v1alpha1
-# knative.dev/pkg v0.0.0-20210715175632-d9b7180af6f2
+# knative.dev/pkg v0.0.0-20210803160015-21eb4c167cc5
 ## explicit
 knative.dev/pkg/apis
 knative.dev/pkg/apis/duck
@@ -681,13 +681,14 @@ knative.dev/pkg/signals
 knative.dev/pkg/system
 knative.dev/pkg/tracker
 knative.dev/pkg/unstructured
-# knative.dev/serving v0.24.1-0.20210721125539-11abffdc6f0d
+# knative.dev/serving v0.24.1-0.20210803152115-ac8d05d5cebd
 knative.dev/serving/pkg/apis/autoscaling
 knative.dev/serving/pkg/apis/autoscaling/v1alpha1
 knative.dev/serving/pkg/apis/config
 knative.dev/serving/pkg/apis/serving
 knative.dev/serving/pkg/apis/serving/v1
 knative.dev/serving/pkg/apis/serving/v1alpha1
+knative.dev/serving/pkg/apis/serving/v1beta1
 knative.dev/serving/pkg/autoscaler/config
 knative.dev/serving/pkg/autoscaler/config/autoscalerconfig
 knative.dev/serving/pkg/client/clientset/versioned/scheme
