@@ -1,6 +1,6 @@
 module knative.dev/kn-plugin-source-kamelet
 
-go 1.15
+go 1.16
 
 require (
 	github.com/apache/camel-k/pkg/apis/camel v1.3.1
