@@ -140,7 +140,7 @@ func writeKameletProperties(dw printers.PrefixWriter, kamelet *v1alpha1.Kamelet,
 		section := dw.WriteAttribute("Properties", "")
 		maxLen := getMaxPropertyNameLen(kamelet.Spec.Definition.Properties)
 		format := "%-" + maxLen + "s %-8s %-8s %s\n"
-		section.Writef(format, "Name", "Required", "Type", "Description")
+		section.Writef(format, "Name", "Req", "Type", "Description")
 		for name, property := range kamelet.Spec.Definition.Properties {
 			section.Writef(format, name, isRequired(name, kamelet.Spec.Definition.Required), property.Type, property.Description)
 		}
@@ -166,11 +166,11 @@ func writeKameletProperties(dw printers.PrefixWriter, kamelet *v1alpha1.Kamelet,
 func isRequired(name string, required []string) string {
 	for _, propertyName := range required {
 		if propertyName == name {
-			return "true"
+			return "✓"
 		}
 	}
 
-	return "false"
+	return " "
 }
 
 func getMaxPropertyNameLen(properties map[string]v1alpha1.JSONSchemaProps) string {
