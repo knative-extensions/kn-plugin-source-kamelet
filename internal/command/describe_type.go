@@ -183,14 +183,6 @@ func getMaxPropertyNameLen(properties map[string]v1alpha1.JSONSchemaProps) strin
 	return strconv.Itoa(max)
 }
 
-func extractKameletProvider(kamelet *v1alpha1.Kamelet) string {
-	return kamelet.Labels["camel.apache.org/kamelet.provider"]
-}
-
-func isEventSourceType(kamelet *v1alpha1.Kamelet) bool {
-	return kamelet.Labels["camel.apache.org/kamelet.type"] == "source"
-}
-
 func asApiConditions(conditions []v1alpha1.KameletCondition) apis.Conditions {
 	var aConditions apis.Conditions
 
