@@ -18,6 +18,7 @@ package command
 
 import (
 	"context"
+
 	corev1 "k8s.io/api/core/v1"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	messagingv1 "knative.dev/eventing/pkg/apis/messaging/v1"

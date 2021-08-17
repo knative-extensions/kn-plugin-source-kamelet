@@ -20,19 +20,18 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"path/filepath"
+	"strings"
+
 	camelv1 "github.com/apache/camel-k/pkg/apis/camel/v1"
 	"github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
+	"github.com/spf13/cobra"
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	knerrors "knative.dev/client/pkg/errors"
 	"knative.dev/client/pkg/kn/commands"
-	messagingv1 "knative.dev/eventing/pkg/apis/messaging/v1"
-	"path/filepath"
-	"strings"
-
-	"github.com/spf13/cobra"
 )
 
 var bindExample = `
@@ -53,7 +52,7 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 		Example: bindExample,
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			if len(args) != 2 {
-				return errors.New("'kn-source-kamelet bind' requires the Kamelet source and the Knative broker, channel or service as argument")
+				return errors.New("'kn-source-kamelet bind' requires the Kamelet source and the Knative sink as argument")
 			}
 			source := args[0]
 			sink := args[1]
@@ -74,7 +73,7 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 			}
 
 			if !isEventSourceType(kamelet) {
-				return fmt.Errorf("kamelet %s is not an event source", source)
+				return fmt.Errorf("Kamelet %s is not an event source", source)
 			}
 
 			sourceProperties, err := asEndpointProperties(getProperties("source", properties))
@@ -198,7 +197,6 @@ func decodeSink(sink string) (corev1.ObjectReference, error) {
 
 	if sinkExpression.MatchString(sink) {
 		groupNames := sinkExpression.SubexpNames()
-		ref := corev1.ObjectReference{}
 		for _, match := range sinkExpression.FindAllStringSubmatch(sink, -1) {
 			for idx, text := range match {
 				groupName := groupNames[idx]
@@ -222,12 +220,12 @@ func decodeSink(sink string) (corev1.ObjectReference, error) {
 			if ref.APIVersion == "" && sinkType.APIVersion != "" {
 				ref.APIVersion = sinkType.APIVersion
 			}
+		} else {
+			return ref, fmt.Errorf("unsupported sink type %q", ref.Kind)
 		}
-		return ref, nil
+	} else {
+		return ref, fmt.Errorf("unsupported sink expression %q - please use format <kind>:<name>", sink)
 	}
-
-	ref.Kind = "Channel"
-	ref.APIVersion = messagingv1.SchemeGroupVersion.String()
 
 	return ref, nil
 }

@@ -17,9 +17,10 @@
 package command
 
 import (
-	"github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	"regexp"
 	"unicode"
+
+	"github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 )
 
 var (

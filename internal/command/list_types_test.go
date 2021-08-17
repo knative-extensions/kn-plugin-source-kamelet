@@ -42,7 +42,7 @@ func TestListTypesSetup(t *testing.T) {
 }
 
 func TestListTypesOutput(t *testing.T) {
-	mockClient := client.NewMockKameletClient(t)
+	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet1 := createKamelet("k1")
@@ -65,7 +65,7 @@ func TestListTypesOutput(t *testing.T) {
 }
 
 func TestListTypesEmpty(t *testing.T) {
-	mockClient := client.NewMockKameletClient(t)
+	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	recorder.List(&camelkapis.KameletList{}, nil)
@@ -78,7 +78,7 @@ func TestListTypesEmpty(t *testing.T) {
 }
 
 func TestListTypesNoReadyReasonOutput(t *testing.T) {
-	mockClient := client.NewMockKameletClient(t)
+	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet1 := createKamelet("k1")
@@ -107,7 +107,7 @@ func TestListTypesNoReadyReasonOutput(t *testing.T) {
 }
 
 func TestListTypesAllNamespace(t *testing.T) {
-	mockClient := client.NewMockKameletClient(t)
+	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet1 := createKameletInNamespace("k1", "default1")
@@ -128,7 +128,7 @@ func TestListTypesAllNamespace(t *testing.T) {
 	recorder.Validate()
 }
 
-func runListTypesCmd(c *client.MockKameletClient, options ...string) (string, error) {
+func runListTypesCmd(c *client.MockClient, options ...string) (string, error) {
 	p := KameletPluginParams{
 		KnParams: &commands.KnParams{},
 		Context:  context.TODO(),

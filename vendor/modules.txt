@@ -657,6 +657,7 @@ knative.dev/client/pkg/util
 knative.dev/client/pkg/util/mock
 knative.dev/client/pkg/wait
 # knative.dev/eventing v0.25.1-0.20210827141738-ea5ed9adf51f
+## explicit
 knative.dev/eventing/pkg/apis/config
 knative.dev/eventing/pkg/apis/duck
 knative.dev/eventing/pkg/apis/duck/v1
@@ -719,6 +720,7 @@ knative.dev/pkg/system
 knative.dev/pkg/tracker
 knative.dev/pkg/unstructured
 # knative.dev/serving v0.25.1-0.20210827140938-e6a7166509e6
+## explicit
 knative.dev/serving/pkg/apis/autoscaling
 knative.dev/serving/pkg/apis/autoscaling/v1alpha1
 knative.dev/serving/pkg/apis/config
