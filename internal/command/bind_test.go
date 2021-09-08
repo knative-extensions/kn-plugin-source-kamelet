@@ -26,6 +26,7 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	messagingv1 "knative.dev/eventing/pkg/apis/messaging/v1"
+	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 
 	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
 	"knative.dev/client/pkg/kn/commands"
@@ -49,7 +50,7 @@ func TestBindErrorCaseMissingArgument(t *testing.T) {
 	recorder := mockClient.Recorder()
 
 	err := runBindCmd(mockClient)
-	assert.Error(t, err, "'kn-source-kamelet bind' requires the Kamelet source and the Knative sink as argument")
+	assert.Error(t, err, "'kn-source-kamelet bind' requires the Kamelet source as argument")
 	recorder.Validate()
 }
 
@@ -60,7 +61,7 @@ func TestBindErrorCaseNotFound(t *testing.T) {
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, errors.New("not found"))
 
-	err := runBindCmd(mockClient, "k1", "channel:test")
+	err := runBindCmd(mockClient, "k1", "--channel", "test")
 	assert.Error(t, err, "not found")
 	recorder.Validate()
 }
@@ -75,7 +76,7 @@ func TestBindErrorCaseNoEventSource(t *testing.T) {
 	}
 	recorder.Get(kamelet, nil)
 
-	err := runBindCmd(mockClient, "k1", "channel:test")
+	err := runBindCmd(mockClient, "k1", "--channel", "test")
 	assert.Error(t, err, "Kamelet k1 is not an event source")
 	recorder.Validate()
 }
@@ -87,7 +88,7 @@ func TestBindErrorCaseMissingRequiredProperty(t *testing.T) {
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	err := runBindCmd(mockClient, "k1", "channel:test")
+	err := runBindCmd(mockClient, "k1", "--channel", "test")
 	assert.Error(t, err, "binding is missing required property \"k1_prop\" for Kamelet \"k1\"")
 
 	recorder.Validate()
@@ -100,7 +101,7 @@ func TestBindErrorCaseUnsupportedSinkType(t *testing.T) {
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	err := runBindCmd(mockClient, "k1", "foo:test", "-p=source.k1_prop=foo")
+	err := runBindCmd(mockClient, "k1", "--sink", "foo:test", "--source-property", "k1_prop=foo")
 	assert.Error(t, err, "unsupported sink type \"foo\"")
 
 	recorder.Validate()
@@ -113,7 +114,7 @@ func TestBindErrorCaseUnsupportedSinkExpression(t *testing.T) {
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	err := runBindCmd(mockClient, "k1", "foo", "-p=source.k1_prop=foo")
+	err := runBindCmd(mockClient, "k1", "--sink", "foo", "--source-property", "k1_prop=foo")
 	assert.Error(t, err, "unsupported sink expression \"foo\" - please use format <kind>:<name>")
 
 	recorder.Validate()
@@ -130,7 +131,7 @@ func TestBindToChannel(t *testing.T) {
 	recorder.CreateKameletBinding(&v1alpha1.KameletBinding{
 		ObjectMeta: v1.ObjectMeta{
 			Namespace: namespace,
-			Name:      "k1-to-channeltest",
+			Name:      "k1-to-channel-test",
 		},
 		Spec: v1alpha1.KameletBindingSpec{
 			Source: v1alpha1.Endpoint{
@@ -155,7 +156,7 @@ func TestBindToChannel(t *testing.T) {
 			},
 		},
 	}, nil)
-	err := runBindCmd(mockClient, "k1", "channel:test", "-p=source.k1_prop=foo")
+	err := runBindCmd(mockClient, "k1", "--channel", "test", "--source-property", "k1_prop=foo")
 	assert.NilError(t, err)
 
 	recorder.Validate()
@@ -172,7 +173,7 @@ func TestBindToBroker(t *testing.T) {
 	recorder.CreateKameletBinding(&v1alpha1.KameletBinding{
 		ObjectMeta: v1.ObjectMeta{
 			Namespace: namespace,
-			Name:      "k2-to-brokertest",
+			Name:      "k2-to-broker-test",
 		},
 		Spec: v1alpha1.KameletBindingSpec{
 			Source: v1alpha1.Endpoint{
@@ -197,7 +198,49 @@ func TestBindToBroker(t *testing.T) {
 			},
 		},
 	}, nil)
-	err := runBindCmd(mockClient, "k2", "broker:test", "-p=source.k2_prop=foo", "-psource.k2_optional=bar")
+	err := runBindCmd(mockClient, "k2", "--broker", "test", "--source-property", "k2_prop=foo", "--source-property", "k2_optional=bar")
+	assert.NilError(t, err)
+
+	recorder.Validate()
+}
+
+func TestBindToService(t *testing.T) {
+	mockClient := client.NewMockClient(t)
+	recorder := mockClient.Recorder()
+
+	namespace := "current"
+	kamelet := createKameletInNamespace("k1", namespace)
+	recorder.Get(kamelet, nil)
+
+	recorder.CreateKameletBinding(&v1alpha1.KameletBinding{
+		ObjectMeta: v1.ObjectMeta{
+			Namespace: namespace,
+			Name:      "k1-to-service-test",
+		},
+		Spec: v1alpha1.KameletBindingSpec{
+			Source: v1alpha1.Endpoint{
+				Properties: &v1alpha1.EndpointProperties{
+					RawMessage: []byte("{\"k1_prop\":\"foo\"}"),
+				},
+				Ref: &corev1.ObjectReference{
+					Kind:       v1alpha1.KameletKind,
+					APIVersion: v1alpha1.SchemeGroupVersion.String(),
+					Namespace:  namespace,
+					Name:       "k1",
+				},
+			},
+			Sink: v1alpha1.Endpoint{
+				Properties: &v1alpha1.EndpointProperties{},
+				Ref: &corev1.ObjectReference{
+					Kind:       "Service",
+					APIVersion: servingv1.SchemeGroupVersion.String(),
+					Namespace:  namespace,
+					Name:       "test",
+				},
+			},
+		},
+	}, nil)
+	err := runBindCmd(mockClient, "k1", "--service", "test", "--source-property", "k1_prop=foo")
 	assert.NilError(t, err)
 
 	recorder.Validate()

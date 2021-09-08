@@ -36,26 +36,30 @@ import (
 
 var bindExample = `
   # Bind Kamelets in an integration flow
-  kn-source-kamelet bind SOURCE SINK
+  kn-source-kamelet bind SOURCE
 
   # Add a binding properties
-  kn-source-kamelet bind SOURCE SINK --property=source.<key>=<value>`
+  kn-source-kamelet bind SOURCE --sink|broker|channel|service=<name> --source-property=<key>=<value> --sink-property=<key>=<value>`
 
 // NewBindCommand implements 'kn-source-kamelet bind' command
 func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 	printFlags := genericclioptions.NewPrintFlags("")
 
-	var properties []string
+	var sourceProperties []string
+	var sinkProperties []string
+	var sink string
+	var broker string
+	var channel string
+	var service string
 	cmd := &cobra.Command{
 		Use:     "bind",
 		Short:   "Create KameletBindings and bind Kamelet source to Knative broker, channel or service.",
 		Example: bindExample,
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			if len(args) != 2 {
-				return errors.New("'kn-source-kamelet bind' requires the Kamelet source and the Knative sink as argument")
+			if len(args) != 1 {
+				return errors.New("'kn-source-kamelet bind' requires the Kamelet source as argument")
 			}
 			source := args[0]
-			sink := args[1]
 
 			namespace, err := p.GetNamespace(cmd)
 			if err != nil {
@@ -76,12 +80,12 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 				return fmt.Errorf("Kamelet %s is not an event source", source)
 			}
 
-			sourceProperties, err := asEndpointProperties(getProperties("source", properties))
+			sourceProps, err := parseProperties(sourceProperties)
 			if err != nil {
 				return knerrors.GetError(err)
 			}
 			sourceEndpoint := v1alpha1.Endpoint{
-				Properties: &sourceProperties,
+				Properties: &sourceProps,
 				Ref: &corev1.ObjectReference{
 					Kind:       v1alpha1.KameletKind,
 					APIVersion: v1alpha1.SchemeGroupVersion.String(),
@@ -94,22 +98,34 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 				return knerrors.GetError(err)
 			}
 
-			channelOrBrokerRef, err := decodeSink(sink)
+			var sinkRef corev1.ObjectReference
+			if sink != "" {
+				sinkRef, err = decodeSink(sink)
+			} else if broker != "" {
+				sinkRef, err = decodeSink("broker:" + broker)
+			} else if channel != "" {
+				sinkRef, err = decodeSink("channel:" + channel)
+			} else if service != "" {
+				sinkRef, err = decodeSink("service:" + service)
+			} else {
+				err = fmt.Errorf("missing sink for binding - please use one of --sink, --broker, --channel, --service")
+			}
+
 			if err != nil {
 				return knerrors.GetError(err)
 			}
 
-			if channelOrBrokerRef.Namespace == "" {
-				channelOrBrokerRef.Namespace = namespace
+			if sinkRef.Namespace == "" {
+				sinkRef.Namespace = namespace
 			}
 
-			sinkProperties, err := asEndpointProperties(getProperties("sink", properties))
+			sinkProps, err := parseProperties(sinkProperties)
 			if err != nil {
 				return knerrors.GetError(err)
 			}
 			sinkEndpoint := v1alpha1.Endpoint{
-				Properties: &sinkProperties,
-				Ref:        &channelOrBrokerRef,
+				Properties: &sinkProps,
+				Ref:        &sinkRef,
 			}
 
 			name, err := cmd.Flags().GetString("name")
@@ -117,7 +133,7 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 				return knerrors.GetError(err)
 			}
 
-			name = nameFor(name, source, sink)
+			name = nameFor(name, source, sinkRef)
 
 			binding := v1alpha1.KameletBinding{
 				ObjectMeta: v1.ObjectMeta{
@@ -169,19 +185,24 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 	commands.AddNamespaceFlags(flags, false)
 
 	flags.String("name", "", "Binding name.")
-	flags.StringArrayVarP(&properties, "property", "p", nil, `Add a binding property in the form of "source.<key>=<value>", "sink.<key>=<value>"`)
+	flags.StringVar(&sink, "sink", "", "Sink expression to define the binding sink.")
+	flags.StringVar(&broker, "broker", "", "Uses a broker as binding sink.")
+	flags.StringVar(&channel, "channel", "", "Uses a channel as binding sink.")
+	flags.StringVar(&service, "service", "", "Uses a Knative service as binding sink.")
+	flags.StringArrayVar(&sourceProperties, "source-property", nil, `Add a source property in the form of "<key>=<value>"`)
+	flags.StringArrayVar(&sinkProperties, "sink-property", nil, `Add a sink property in the form of "<key>=<value>"`)
 
 	printFlags.AddFlags(cmd)
 	cmd.Flag("output").Usage = fmt.Sprintf("Output format. One of: %s.", strings.Join(append(printFlags.AllowedFormats(), "url"), "|"))
 	return cmd
 }
 
-func nameFor(name, source string, sink string) string {
+func nameFor(name, source string, sinkRef corev1.ObjectReference) string {
 	if name != "" {
 		return name
 	}
 
-	generated := fmt.Sprintf("%s-to-%s", source, sink)
+	generated := fmt.Sprintf("%s-to-%s-%s", source, sinkRef.Kind, sinkRef.Name)
 
 	generated = filepath.Base(generated)
 	generated = strings.Split(generated, ".")[0]
@@ -252,18 +273,16 @@ func verifyProperties(kamelet *v1alpha1.Kamelet, endpoint v1alpha1.Endpoint) err
 	return nil
 }
 
-func getProperties(refType string, properties []string) map[string]string {
+func parseProperties(properties []string) (v1alpha1.EndpointProperties, error) {
 	props := make(map[string]string)
 	for _, p := range properties {
-		tp, key, value, err := parseProperty(p)
+		key, value, err := parseProperty(p)
 		if err != nil {
 			continue
 		}
-		if tp == refType {
-			props[key] = value
-		}
+		props[key] = value
 	}
-	return props
+	return asEndpointProperties(props)
 }
 
 func asEndpointProperties(props map[string]string) (v1alpha1.EndpointProperties, error) {
@@ -279,19 +298,10 @@ func asEndpointProperties(props map[string]string) (v1alpha1.EndpointProperties,
 	}, nil
 }
 
-func parseProperty(prop string) (string, string, string, error) {
+func parseProperty(prop string) (string, string, error) {
 	parts := strings.SplitN(prop, "=", 2)
 	if len(parts) != 2 {
-		return "", "", "", fmt.Errorf(`property %q does not follow format "[source|sink|step-<n>].<key>=<value>"`, prop)
+		return "", "", fmt.Errorf(`property %q does not follow format "<key>=<value>"`, prop)
 	}
-	keyParts := strings.SplitN(parts[0], ".", 2)
-	if len(keyParts) != 2 {
-		return "", "", "", fmt.Errorf(`property key %q does not follow format "[source|sink|step-<n>].<key>"`, parts[0])
-	}
-	isSource := keyParts[0] == "source"
-	isSink := keyParts[0] == "sink"
-	if !isSource && !isSink {
-		return "", "", "", fmt.Errorf(`property key %q does not start with "source." or "sink."`, parts[0])
-	}
-	return keyParts[0], keyParts[1], parts[1], nil
+	return parts[0], parts[1], nil
 }
