@@ -51,7 +51,7 @@ var (
 	}
 )
 
-// KnParams for creating commands. Useful for inserting mocks for testing.
+// KameletPluginParams for creating commands. Useful for inserting mocks for testing.
 type KameletPluginParams struct {
 	*commands.KnParams
 	Context          context.Context
@@ -82,4 +82,16 @@ func (params *KameletPluginParams) newKameletClient() (camelkv1alpha1.CamelV1alp
 	}
 
 	return client.CamelV1alpha1(), nil
+}
+
+// CreateBindingOptions holding settings and options on the create binding command
+type CreateBindingOptions struct {
+	Name             string
+	Source           string
+	SourceProperties []string
+	Sink             string
+	SinkProperties   []string
+	Broker           string
+	Channel          string
+	Service          string
 }
