@@ -19,9 +19,36 @@ package command
 import (
 	"context"
 
+	corev1 "k8s.io/api/core/v1"
+	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
+	messagingv1 "knative.dev/eventing/pkg/apis/messaging/v1"
+	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
+
 	camelk "github.com/apache/camel-k/pkg/client/camel/clientset/versioned"
 	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
 	"knative.dev/client/pkg/kn/commands"
+)
+
+const (
+	KameletTypeLabel     = "camel.apache.org/kamelet.type"
+	KameletProviderLabel = "camel.apache.org/kamelet.provider"
+)
+
+var (
+	sinkTypes = map[string]corev1.ObjectReference{
+		"channel": {
+			Kind:       "Channel",
+			APIVersion: messagingv1.SchemeGroupVersion.String(),
+		},
+		"broker": {
+			Kind:       "Broker",
+			APIVersion: eventingv1.SchemeGroupVersion.String(),
+		},
+		"service": {
+			Kind:       "Service",
+			APIVersion: servingv1.SchemeGroupVersion.String(),
+		},
+	}
 )
 
 // KnParams for creating commands. Useful for inserting mocks for testing.

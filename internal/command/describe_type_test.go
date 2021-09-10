@@ -41,7 +41,7 @@ func TestDescribeTypeSetup(t *testing.T) {
 	assert.Assert(t, describeCmd.RunE != nil)
 }
 func TestDescribeTypeErrorCase(t *testing.T) {
-	mockClient := client.NewMockKameletClient(t)
+	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	_, err := runDescribeTypeCmd(mockClient)
@@ -50,7 +50,7 @@ func TestDescribeTypeErrorCase(t *testing.T) {
 }
 
 func TestDescribeTypeErrorCaseNotFound(t *testing.T) {
-	mockClient := client.NewMockKameletClient(t)
+	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
@@ -62,12 +62,12 @@ func TestDescribeTypeErrorCaseNotFound(t *testing.T) {
 }
 
 func TestDescribeTypeErrorCaseNoEventSource(t *testing.T) {
-	mockClient := client.NewMockKameletClient(t)
+	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
 	kamelet.Labels = map[string]string{
-		"camel.apache.org/kamelet.type": "sink",
+		KameletTypeLabel: "sink",
 	}
 	recorder.Get(kamelet, nil)
 
@@ -77,7 +77,7 @@ func TestDescribeTypeErrorCaseNoEventSource(t *testing.T) {
 }
 
 func TestDescribeTypeOutput(t *testing.T) {
-	mockClient := client.NewMockKameletClient(t)
+	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
@@ -106,7 +106,7 @@ func TestDescribeTypeOutput(t *testing.T) {
 }
 
 func TestDescribeTypeVerboseOutput(t *testing.T) {
-	mockClient := client.NewMockKameletClient(t)
+	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
@@ -139,7 +139,7 @@ func TestDescribeTypeVerboseOutput(t *testing.T) {
 }
 
 func TestDescribeTypeURL(t *testing.T) {
-	mockClient := client.NewMockKameletClient(t)
+	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
@@ -154,7 +154,7 @@ func TestDescribeTypeURL(t *testing.T) {
 	recorder.Validate()
 }
 
-func runDescribeTypeCmd(c *client.MockKameletClient, options ...string) (string, error) {
+func runDescribeTypeCmd(c *client.MockClient, options ...string) (string, error) {
 	p := KameletPluginParams{
 		KnParams: &commands.KnParams{},
 		Context:  context.TODO(),

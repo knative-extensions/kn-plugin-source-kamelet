@@ -58,7 +58,11 @@ func NewListTypesCommand(p *KameletPluginParams) *cobra.Command {
 				return err
 			}
 
-			kameletList, err := kameletClient.Kamelets(namespace).List(p.Context, v1.ListOptions{})
+			filterCriteria := v1.ListOptions{
+				LabelSelector: fmt.Sprintf("%s=%s", KameletTypeLabel, "source"),
+			}
+
+			kameletList, err := kameletClient.Kamelets(namespace).List(p.Context, filterCriteria)
 			if err != nil {
 				return err
 			}
