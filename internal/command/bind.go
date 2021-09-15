@@ -18,6 +18,7 @@ package command
 
 import (
 	"errors"
+
 	"github.com/spf13/cobra"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	knerrors "knative.dev/client/pkg/errors"

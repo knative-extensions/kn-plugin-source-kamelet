@@ -93,6 +93,19 @@ func TestBindingCreateErrorCaseMissingRequiredProperty(t *testing.T) {
 	recorder.Validate()
 }
 
+func TestBindingCreateErrorCaseUnknownProperty(t *testing.T) {
+	mockClient := client.NewMockClient(t)
+	recorder := mockClient.Recorder()
+
+	kamelet := createKamelet("k1")
+	recorder.Get(kamelet, nil)
+
+	err := runBindingCreateCmd(mockClient, "k1-to-sink", "--kamelet", "k1", "--channel", "test", "--source-property", "k1_prop=foo", "--source-property", "foo=unknown")
+	assert.Error(t, err, "binding uses unknown property \"foo\" for Kamelet \"k1\"")
+
+	recorder.Validate()
+}
+
 func TestBindingCreateErrorCaseUnsupportedSinkType(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()

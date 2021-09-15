@@ -262,8 +262,9 @@ func decodeSink(sink string) (corev1.ObjectReference, error) {
 }
 
 func verifyProperties(kamelet *v1alpha1.Kamelet, endpoint v1alpha1.Endpoint) error {
+	pMap, err := endpoint.Properties.GetPropertyMap()
+
 	if kamelet.Spec.Definition != nil && len(kamelet.Spec.Definition.Required) > 0 {
-		pMap, err := endpoint.Properties.GetPropertyMap()
 		if err != nil {
 			return err
 		}
@@ -277,6 +278,12 @@ func verifyProperties(kamelet *v1alpha1.Kamelet, endpoint v1alpha1.Endpoint) err
 			if !found {
 				return fmt.Errorf("binding is missing required property %q for Kamelet %q", reqProp, kamelet.Name)
 			}
+		}
+	}
+
+	for propName := range pMap {
+		if _, ok := kamelet.Spec.Definition.Properties[propName]; !ok {
+			return fmt.Errorf("binding uses unknown property %q for Kamelet %q", propName, kamelet.Name)
 		}
 	}
 
