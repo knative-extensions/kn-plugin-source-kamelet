@@ -42,19 +42,17 @@ var bindingCreateExample = `
   kn-source-kamelet binding create NAME
 
   # Add a binding properties
-  kn-source-kamelet binding create NAME --kamelet=name --sink|broker|channel|service=<name> --source-property=<key>=<value> --sink-property=<key>=<value>`
+  kn-source-kamelet binding create NAME --kamelet=name --sink|broker|channel|service=<name> --source-property=<key>=<value>`
 
 // newBindingCreateCommand implements 'kn-source-kamelet bind' command
 func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
-	printFlags := genericclioptions.NewPrintFlags("")
-
 	var sourceProperties []string
-	var sinkProperties []string
 	var source string
 	var sink string
 	var broker string
 	var channel string
 	var service string
+	var output string
 	cmd := &cobra.Command{
 		Use:     "create",
 		Short:   "Create Kamelet bindings and bind source to Knative broker, channel or service.",
@@ -80,7 +78,6 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 				Source:           source,
 				SourceProperties: sourceProperties,
 				Sink:             sink,
-				SinkProperties:   sinkProperties,
 				Broker:           broker,
 				Channel:          channel,
 				Service:          service,
@@ -91,8 +88,10 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 				return err
 			}
 
-			out := cmd.OutOrStdout()
-			if printFlags.OutputFlagSpecified() {
+			if cmd.Flag("output").Changed {
+				out := cmd.OutOrStdout()
+				printFlags := genericclioptions.NewPrintFlags("")
+				printFlags.WithDefaultOutput(output)
 				printer, err := printFlags.ToPrinter()
 				if err != nil {
 					return err
@@ -112,10 +111,7 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 	flags.StringVar(&channel, "channel", "", "Uses a channel as binding sink.")
 	flags.StringVar(&service, "service", "", "Uses a Knative service as binding sink.")
 	flags.StringArrayVar(&sourceProperties, "source-property", nil, `Add a source property in the form of "<key>=<value>"`)
-	flags.StringArrayVar(&sinkProperties, "sink-property", nil, `Add a sink property in the form of "<key>=<value>"`)
-
-	printFlags.AddFlags(cmd)
-	cmd.Flag("output").Usage = fmt.Sprintf("Output format. One of: %s.", strings.Join(append(printFlags.AllowedFormats(), "url"), "|"))
+	flags.StringVarP(&output, "output", "o", "", "Output format. One of: json|yaml|name|url")
 	return cmd
 }
 
@@ -155,7 +151,7 @@ func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Con
 	} else if options.Channel != "" {
 		sinkRef, err = decodeSink("channel:" + options.Channel)
 	} else if options.Service != "" {
-		sinkRef, err = decodeSink("service:" + options.Service)
+		sinkRef, err = decodeSink("ksvc:" + options.Service)
 	} else {
 		err = fmt.Errorf("missing sink for binding - please use one of --sink, --broker, --channel, --service")
 	}
@@ -168,13 +164,8 @@ func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Con
 		sinkRef.Namespace = namespace
 	}
 
-	sinkProps, err := parseProperties(options.SinkProperties)
-	if err != nil {
-		return nil, knerrors.GetError(err)
-	}
 	sinkEndpoint := v1alpha1.Endpoint{
-		Properties: &sinkProps,
-		Ref:        &sinkRef,
+		Ref: &sinkRef,
 	}
 
 	name := nameFor(options.Name, options.Source, sinkRef)

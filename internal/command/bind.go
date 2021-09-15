@@ -18,9 +18,6 @@ package command
 
 import (
 	"errors"
-	"fmt"
-	"strings"
-
 	"github.com/spf13/cobra"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	knerrors "knative.dev/client/pkg/errors"
@@ -32,18 +29,16 @@ var bindExample = `
   kn-source-kamelet bind SOURCE
 
   # Add a binding properties
-  kn-source-kamelet bind SOURCE --sink|broker|channel|service=<name> --source-property=<key>=<value> --sink-property=<key>=<value>`
+  kn-source-kamelet bind SOURCE --sink|broker|channel|service=<name> --source-property=<key>=<value>`
 
 // NewBindCommand implements 'kn-source-kamelet bind' command
 func NewBindCommand(p *KameletPluginParams) *cobra.Command {
-	printFlags := genericclioptions.NewPrintFlags("")
-
 	var sourceProperties []string
-	var sinkProperties []string
 	var sink string
 	var broker string
 	var channel string
 	var service string
+	var output string
 	cmd := &cobra.Command{
 		Use:     "bind",
 		Short:   "Create Kamelet bindings and bind source to Knative broker, channel or service.",
@@ -74,7 +69,6 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 				Source:           source,
 				SourceProperties: sourceProperties,
 				Sink:             sink,
-				SinkProperties:   sinkProperties,
 				Broker:           broker,
 				Channel:          channel,
 				Service:          service,
@@ -85,8 +79,10 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 				return err
 			}
 
-			out := cmd.OutOrStdout()
-			if printFlags.OutputFlagSpecified() {
+			if cmd.Flag("output").Changed {
+				out := cmd.OutOrStdout()
+				printFlags := genericclioptions.NewPrintFlags("")
+				printFlags.WithDefaultOutput(output)
 				printer, err := printFlags.ToPrinter()
 				if err != nil {
 					return err
@@ -106,9 +102,6 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 	flags.StringVar(&channel, "channel", "", "Uses a channel as binding sink.")
 	flags.StringVar(&service, "service", "", "Uses a Knative service as binding sink.")
 	flags.StringArrayVar(&sourceProperties, "source-property", nil, `Add a source property in the form of "<key>=<value>"`)
-	flags.StringArrayVar(&sinkProperties, "sink-property", nil, `Add a sink property in the form of "<key>=<value>"`)
-
-	printFlags.AddFlags(cmd)
-	cmd.Flag("output").Usage = fmt.Sprintf("Output format. One of: %s.", strings.Join(append(printFlags.AllowedFormats(), "url"), "|"))
+	flags.StringVarP(&output, "output", "o", "", "Output format. One of: json|yaml|name|url")
 	return cmd
 }

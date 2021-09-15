@@ -44,7 +44,7 @@ var (
 			Kind:       "Broker",
 			APIVersion: eventingv1.SchemeGroupVersion.String(),
 		},
-		"service": {
+		"ksvc": {
 			Kind:       "Service",
 			APIVersion: servingv1.SchemeGroupVersion.String(),
 		},
@@ -90,7 +90,6 @@ type CreateBindingOptions struct {
 	Source           string
 	SourceProperties []string
 	Sink             string
-	SinkProperties   []string
 	Broker           string
 	Channel          string
 	Service          string

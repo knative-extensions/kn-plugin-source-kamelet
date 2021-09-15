@@ -82,12 +82,9 @@ Examples:
   kn-source-kamelet describe-type NAME -o yaml
 
 Flags:
-      --allow-missing-template-keys   If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)
   -h, --help                          help for describe-type
   -n, --namespace string              Specify the namespace to operate in.
-  -o, --output string                 Output format. One of: json|yaml|name|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-as-json|jsonpath-file|url.
-      --show-managed-fields           If true, keep the managedFields when printing objects in JSON or YAML format.
-      --template string               Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
+  -o, --output string                 Output format. One of: json|yaml|name|url.
   -v, --verbose                       More output.
 ----
 
@@ -127,22 +124,18 @@ Examples:
   kn-source-kamelet binding create NAME
 
   # Add a binding properties
-  kn-source-kamelet binding create NAME --kamelet=name --sink|broker|channel|service=<name> --source-property=<key>=<value> --sink-property=<key>=<value>
+  kn-source-kamelet binding create NAME --kamelet=name --sink|broker|channel|service=<name> --source-property=<key>=<value>
 
 Flags:
-      --allow-missing-template-keys   If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)
       --broker string                 Uses a broker as binding sink.
       --channel string                Uses a channel as binding sink.
   -h, --help                          help for create
       --kamelet string                Kamelet source.
   -n, --namespace string              Specify the namespace to operate in.
-  -o, --output string                 Output format. One of: json|yaml|name|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-as-json|jsonpath-file|url.
+  -o, --output string                 Output format. One of: json|yaml|name|url.
       --service string                Uses a Knative service as binding sink.
-      --show-managed-fields           If true, keep the managedFields when printing objects in JSON or YAML format.
       --sink string                   Sink expression to define the binding sink.
-      --sink-property stringArray     Add a sink property in the form of "<key>=<value>"
       --source-property stringArray   Add a source property in the form of "<key>=<value>"
-      --template string               Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
 ----
 
 === `bind`
@@ -162,22 +155,18 @@ Examples:
   kn-source-kamelet bind SOURCE
 
   # Add a binding properties
-  kn-source-kamelet bind SOURCE --sink|broker|channel|service=<name> --source-property=<key>=<value> --sink-property=<key>=<value>
+  kn-source-kamelet bind SOURCE --sink|broker|channel|service=<name> --source-property=<key>=<value>
 
 Flags:
-      --allow-missing-template-keys   If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)
       --broker string                 Uses a broker as binding sink.
       --channel string                Uses a channel as binding sink.
   -h, --help                          help for bind
       --name string                   Binding name.
   -n, --namespace string              Specify the namespace to operate in.
-  -o, --output string                 Output format. One of: json|yaml|name|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-as-json|jsonpath-file|url.
+  -o, --output string                 Output format. One of: json|yaml|name|url.
       --service string                Uses a Knative service as binding sink.
-      --show-managed-fields           If true, keep the managedFields when printing objects in JSON or YAML format.
       --sink string                   Sink expression to define the binding sink.
-      --sink-property stringArray     Add a sink property in the form of "<key>=<value>"
       --source-property stringArray   Add a source property in the form of "<key>=<value>"
-      --template string               Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
 ----
 
 === `version`

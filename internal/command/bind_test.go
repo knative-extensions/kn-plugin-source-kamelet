@@ -146,7 +146,6 @@ func TestBindToChannel(t *testing.T) {
 				},
 			},
 			Sink: v1alpha1.Endpoint{
-				Properties: &v1alpha1.EndpointProperties{},
 				Ref: &corev1.ObjectReference{
 					Kind:       "Channel",
 					APIVersion: messagingv1.SchemeGroupVersion.String(),
@@ -188,7 +187,6 @@ func TestBindToBroker(t *testing.T) {
 				},
 			},
 			Sink: v1alpha1.Endpoint{
-				Properties: &v1alpha1.EndpointProperties{},
 				Ref: &corev1.ObjectReference{
 					Kind:       "Broker",
 					APIVersion: eventingv1.SchemeGroupVersion.String(),
@@ -230,7 +228,6 @@ func TestBindToService(t *testing.T) {
 				},
 			},
 			Sink: v1alpha1.Endpoint{
-				Properties: &v1alpha1.EndpointProperties{},
 				Ref: &corev1.ObjectReference{
 					Kind:       "Service",
 					APIVersion: servingv1.SchemeGroupVersion.String(),
