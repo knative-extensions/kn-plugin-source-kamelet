@@ -93,7 +93,7 @@ github.com/google/go-cmp/cmp/internal/diff
 github.com/google/go-cmp/cmp/internal/flags
 github.com/google/go-cmp/cmp/internal/function
 github.com/google/go-cmp/cmp/internal/value
-# github.com/google/go-containerregistry v0.5.2-0.20210709161016-b448abac9a70
+# github.com/google/go-containerregistry v0.6.0
 github.com/google/go-containerregistry/pkg/name
 # github.com/google/gofuzz v1.2.0
 github.com/google/gofuzz
@@ -635,7 +635,7 @@ k8s.io/utils/buffer
 k8s.io/utils/integer
 k8s.io/utils/pointer
 k8s.io/utils/trace
-# knative.dev/client v0.25.1-0.20210903081157-817068bd7f98
+# knative.dev/client v0.25.1-0.20210913155632-82a21a5773be
 ## explicit
 knative.dev/client/pkg/dynamic
 knative.dev/client/pkg/dynamic/fake
@@ -656,7 +656,7 @@ knative.dev/client/pkg/sources/v1beta2
 knative.dev/client/pkg/util
 knative.dev/client/pkg/util/mock
 knative.dev/client/pkg/wait
-# knative.dev/eventing v0.25.1-0.20210827141738-ea5ed9adf51f
+# knative.dev/eventing v0.25.1-0.20210914210007-602ea299ac4e
 ## explicit
 knative.dev/eventing/pkg/apis/config
 knative.dev/eventing/pkg/apis/duck
@@ -683,11 +683,11 @@ knative.dev/eventing/pkg/client/clientset/versioned/typed/sources/v1beta2
 # knative.dev/hack v0.0.0-20210806075220-815cd312d65c
 ## explicit
 knative.dev/hack
-# knative.dev/networking v0.0.0-20210827131537-ff7c341e0e06
+# knative.dev/networking v0.0.0-20210910120730-eb37d69eb87f
 knative.dev/networking/pkg
 knative.dev/networking/pkg/apis/networking
 knative.dev/networking/pkg/apis/networking/v1alpha1
-# knative.dev/pkg v0.0.0-20210906105443-bb433c98147d
+# knative.dev/pkg v0.0.0-20210914164111-4857ab6939e3
 ## explicit
 knative.dev/pkg/apis
 knative.dev/pkg/apis/duck
@@ -719,7 +719,7 @@ knative.dev/pkg/signals
 knative.dev/pkg/system
 knative.dev/pkg/tracker
 knative.dev/pkg/unstructured
-# knative.dev/serving v0.25.1-0.20210827140938-e6a7166509e6
+# knative.dev/serving v0.25.1-0.20210914121411-76cb92b17e88
 ## explicit
 knative.dev/serving/pkg/apis/autoscaling
 knative.dev/serving/pkg/apis/autoscaling/v1alpha1
