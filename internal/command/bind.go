@@ -72,6 +72,7 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 				Channel:          channel,
 				Service:          service,
 				Force:            true,
+				CmdOut:           cmd.OutOrStdout(),
 			}
 
 			err = createBinding(client, p.Context, namespace, options)

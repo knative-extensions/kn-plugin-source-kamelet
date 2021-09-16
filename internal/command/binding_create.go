@@ -81,6 +81,7 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 				Channel:          channel,
 				Service:          service,
 				Force:            force,
+				CmdOut:           cmd.OutOrStdout(),
 			}
 
 			err = createBinding(client, p.Context, namespace, options)
@@ -192,9 +193,9 @@ func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Con
 	}
 
 	if existed {
-		fmt.Printf("kamelet binding %q updated\n", name)
+		_, _ = fmt.Fprintf(options.CmdOut, "kamelet binding %q updated\n", name)
 	} else {
-		fmt.Printf("kamelet binding %q created\n", name)
+		_, _ = fmt.Fprintf(options.CmdOut, "kamelet binding %q created\n", name)
 	}
 
 	return nil

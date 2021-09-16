@@ -18,6 +18,7 @@ package command
 
 import (
 	"context"
+	"io"
 
 	corev1 "k8s.io/api/core/v1"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
@@ -94,4 +95,5 @@ type CreateBindingOptions struct {
 	Channel          string
 	Service          string
 	Force            bool
+	CmdOut           io.Writer
 }
