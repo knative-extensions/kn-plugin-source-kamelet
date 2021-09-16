@@ -134,7 +134,7 @@ Flags:
       --kamelet string                Kamelet source.
   -n, --namespace string              Specify the namespace to operate in.
       --service string                Uses a Knative service as binding sink.
-      --sink string                   Sink expression to define the binding sink.
+  -s  --sink string                   Sink expression to define the binding sink.
       --property stringArray   Add a source property in the form of "<key>=<value>"
 ----
 
@@ -165,7 +165,7 @@ Flags:
       --name string                   Binding name.
   -n, --namespace string              Specify the namespace to operate in.
       --service string                Uses a Knative service as binding sink.
-      --sink string                   Sink expression to define the binding sink.
+  -s  --sink string                   Sink expression to define the binding sink.
       --property stringArray   Add a source property in the form of "<key>=<value>"
 ----
 

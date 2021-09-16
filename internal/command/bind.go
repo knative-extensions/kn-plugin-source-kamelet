@@ -86,7 +86,7 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 	commands.AddNamespaceFlags(flags, false)
 
 	flags.String("name", "", "Binding name.")
-	flags.StringVar(&sink, "sink", "", "Sink expression to define the binding sink.")
+	flags.StringVarP(&sink, "sink", "s", "", "Sink expression to define the binding sink.")
 	flags.StringVar(&broker, "broker", "", "Uses a broker as binding sink.")
 	flags.StringVar(&channel, "channel", "", "Uses a channel as binding sink.")
 	flags.StringVar(&service, "service", "", "Uses a Knative service as binding sink.")
