@@ -23,6 +23,7 @@ import (
 
 	"github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	messagingv1 "knative.dev/eventing/pkg/apis/messaging/v1"
@@ -251,6 +252,54 @@ func TestBindToService(t *testing.T) {
 		},
 	}, nil)
 	err := runBindCmd(mockClient, "k3", "--service", "test", "--source-property", "k3_prop=foo")
+	assert.NilError(t, err)
+
+	recorder.Validate()
+}
+
+func TestBindAutoUpdate(t *testing.T) {
+	mockClient := client.NewMockClient(t)
+	recorder := mockClient.Recorder()
+
+	namespace := "current"
+	kamelet := createKameletInNamespace("k1", namespace)
+	recorder.Get(kamelet, nil)
+
+	binding := &v1alpha1.KameletBinding{
+		ObjectMeta: v1.ObjectMeta{
+			Namespace: namespace,
+			Name:      "k1-to-channel-test",
+		},
+		Spec: v1alpha1.KameletBindingSpec{
+			Source: v1alpha1.Endpoint{
+				Properties: &v1alpha1.EndpointProperties{
+					RawMessage: []byte("{\"k1_prop\":\"foo\"}"),
+				},
+				Ref: &corev1.ObjectReference{
+					Kind:       v1alpha1.KameletKind,
+					APIVersion: v1alpha1.SchemeGroupVersion.String(),
+					Namespace:  namespace,
+					Name:       "k1",
+				},
+			},
+			Sink: v1alpha1.Endpoint{
+				Ref: &corev1.ObjectReference{
+					Kind:       "Channel",
+					APIVersion: messagingv1.SchemeGroupVersion.String(),
+					Namespace:  namespace,
+					Name:       "test",
+				},
+			},
+		},
+	}
+
+	recorder.CreateKameletBinding(binding, k8serrors.NewAlreadyExists(v1alpha1.Resource("bindings"), "k1-to-channel-test"))
+
+	recorder.GetKameletBinding(binding, nil)
+
+	recorder.UpdateKameletBinding(binding, nil)
+
+	err := runBindCmd(mockClient, "k1", "--channel", "test", "--source-property", "k1_prop=foo")
 	assert.NilError(t, err)
 
 	recorder.Validate()

@@ -130,6 +130,7 @@ Flags:
       --broker string                 Uses a broker as binding sink.
       --channel string                Uses a channel as binding sink.
   -h, --help                          help for create
+      --force bool                    Apply the changes even if the binding already exists.
       --kamelet string                Kamelet source.
   -n, --namespace string              Specify the namespace to operate in.
       --service string                Uses a Knative service as binding sink.
@@ -160,6 +161,7 @@ Flags:
       --broker string                 Uses a broker as binding sink.
       --channel string                Uses a channel as binding sink.
   -h, --help                          help for bind
+      --force bool                    Apply the changes even if the binding already exists.
       --name string                   Binding name.
   -n, --namespace string              Specify the namespace to operate in.
       --service string                Uses a Knative service as binding sink.

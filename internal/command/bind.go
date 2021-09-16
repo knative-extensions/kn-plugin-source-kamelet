@@ -71,6 +71,7 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 				Broker:           broker,
 				Channel:          channel,
 				Service:          service,
+				Force:            true,
 			}
 
 			err = createBinding(client, p.Context, namespace, options)

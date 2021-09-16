@@ -51,6 +51,7 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 	var broker string
 	var channel string
 	var service string
+	var force bool
 	cmd := &cobra.Command{
 		Use:     "create",
 		Short:   "Create Kamelet bindings and bind source to Knative broker, channel or service.",
@@ -79,6 +80,7 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 				Broker:           broker,
 				Channel:          channel,
 				Service:          service,
+				Force:            force,
 			}
 
 			err = createBinding(client, p.Context, namespace, options)
@@ -97,6 +99,7 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 	flags.StringVar(&broker, "broker", "", "Uses a broker as binding sink.")
 	flags.StringVar(&channel, "channel", "", "Uses a channel as binding sink.")
 	flags.StringVar(&service, "service", "", "Uses a Knative service as binding sink.")
+	flags.BoolVar(&force, "force", false, "Apply the changes even if the binding already exists.")
 	flags.StringArrayVar(&sourceProperties, "source-property", nil, `Add a source property in the form of "<key>=<value>"`)
 	return cmd
 }
@@ -170,24 +173,28 @@ func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Con
 	existed := false
 	_, err = client.KameletBindings(namespace).Create(ctx, &binding, v1.CreateOptions{})
 	if err != nil && k8serrors.IsAlreadyExists(err) {
-		existed = true
+		if options.Force {
+			existed = true
 
-		existing, err := client.KameletBindings(namespace).Get(ctx, binding.Name, v1.GetOptions{})
-		if err != nil {
-			return knerrors.GetError(err)
-		}
-		// Update the custom resource
-		binding.ResourceVersion = existing.ResourceVersion
-		_, err = client.KameletBindings(namespace).Update(ctx, &binding, v1.UpdateOptions{})
-		if err != nil {
-			return knerrors.GetError(err)
+			existing, err := client.KameletBindings(namespace).Get(ctx, binding.Name, v1.GetOptions{})
+			if err != nil {
+				return knerrors.GetError(err)
+			}
+			// Update the custom resource
+			binding.ResourceVersion = existing.ResourceVersion
+			_, err = client.KameletBindings(namespace).Update(ctx, &binding, v1.UpdateOptions{})
+			if err != nil {
+				return knerrors.GetError(err)
+			}
+		} else {
+			return fmt.Errorf("kamelet binding with name %q already exists. Use --force to recreate the binding", binding.Name)
 		}
 	}
 
-	if !existed {
-		fmt.Printf("kamelet binding \"%s\" created\n", name)
+	if existed {
+		fmt.Printf("kamelet binding %q updated\n", name)
 	} else {
-		fmt.Printf("kamelet binding \"%s\" updated\n", name)
+		fmt.Printf("kamelet binding %q created\n", name)
 	}
 
 	return nil

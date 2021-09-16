@@ -23,6 +23,7 @@ import (
 
 	"github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	messagingv1 "knative.dev/eventing/pkg/apis/messaging/v1"
@@ -128,6 +129,48 @@ func TestBindingCreateErrorCaseUnsupportedSinkExpression(t *testing.T) {
 
 	err := runBindingCreateCmd(mockClient, "k1-to-foo", "--kamelet", "k1", "--sink", "foo", "--source-property", "k1_prop=foo")
 	assert.Error(t, err, "unsupported sink expression \"foo\" - please use format <kind>:<name>")
+
+	recorder.Validate()
+}
+
+func TestBindingCreateErrorCaseAlreadyExists(t *testing.T) {
+	mockClient := client.NewMockClient(t)
+	recorder := mockClient.Recorder()
+
+	namespace := "current"
+	kamelet := createKameletInNamespace("k1", namespace)
+	recorder.Get(kamelet, nil)
+
+	recorder.CreateKameletBinding(&v1alpha1.KameletBinding{
+		ObjectMeta: v1.ObjectMeta{
+			Namespace: namespace,
+			Name:      "k1-to-channel",
+		},
+		Spec: v1alpha1.KameletBindingSpec{
+			Source: v1alpha1.Endpoint{
+				Properties: &v1alpha1.EndpointProperties{
+					RawMessage: []byte("{\"k1_prop\":\"foo\"}"),
+				},
+				Ref: &corev1.ObjectReference{
+					Kind:       v1alpha1.KameletKind,
+					APIVersion: v1alpha1.SchemeGroupVersion.String(),
+					Namespace:  namespace,
+					Name:       "k1",
+				},
+			},
+			Sink: v1alpha1.Endpoint{
+				Ref: &corev1.ObjectReference{
+					Kind:       "Channel",
+					APIVersion: messagingv1.SchemeGroupVersion.String(),
+					Namespace:  namespace,
+					Name:       "test",
+				},
+			},
+		},
+	}, k8serrors.NewAlreadyExists(v1alpha1.Resource("bindings"), "k1-to-channel-test"))
+
+	err := runBindingCreateCmd(mockClient, "k1-to-channel", "--kamelet", "k1", "--channel", "test", "--source-property", "k1_prop=foo")
+	assert.Error(t, err, "kamelet binding with name \"k1-to-channel\" already exists. Use --force to recreate the binding")
 
 	recorder.Validate()
 }

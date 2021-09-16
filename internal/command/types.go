@@ -93,4 +93,5 @@ type CreateBindingOptions struct {
 	Broker           string
 	Channel          string
 	Service          string
+	Force            bool
 }
