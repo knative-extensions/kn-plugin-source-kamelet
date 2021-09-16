@@ -102,7 +102,7 @@ func TestBindErrorCaseUnknownProperty(t *testing.T) {
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	err := runBindCmd(mockClient, "k1", "--channel", "test", "--source-property", "k1_prop=foo", "--source-property", "foo=unknown")
+	err := runBindCmd(mockClient, "k1", "--channel", "test", "--property", "k1_prop=foo", "--property", "foo=unknown")
 	assert.Error(t, err, "binding uses unknown property \"foo\" for Kamelet \"k1\"")
 
 	recorder.Validate()
@@ -115,7 +115,7 @@ func TestBindErrorCaseUnsupportedSinkType(t *testing.T) {
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	err := runBindCmd(mockClient, "k1", "--sink", "foo:test", "--source-property", "k1_prop=foo")
+	err := runBindCmd(mockClient, "k1", "--sink", "foo:test", "--property", "k1_prop=foo")
 	assert.Error(t, err, "unsupported sink type \"foo\"")
 
 	recorder.Validate()
@@ -128,7 +128,7 @@ func TestBindErrorCaseUnsupportedSinkExpression(t *testing.T) {
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	err := runBindCmd(mockClient, "k1", "--sink", "foo", "--source-property", "k1_prop=foo")
+	err := runBindCmd(mockClient, "k1", "--sink", "foo", "--property", "k1_prop=foo")
 	assert.Error(t, err, "unsupported sink expression \"foo\" - please use format <kind>:<name>")
 
 	recorder.Validate()
@@ -169,7 +169,7 @@ func TestBindToChannel(t *testing.T) {
 			},
 		},
 	}, nil)
-	err := runBindCmd(mockClient, "k1", "--channel", "test", "--source-property", "k1_prop=foo")
+	err := runBindCmd(mockClient, "k1", "--channel", "test", "--property", "k1_prop=foo")
 	assert.NilError(t, err)
 
 	recorder.Validate()
@@ -210,7 +210,7 @@ func TestBindToBroker(t *testing.T) {
 			},
 		},
 	}, nil)
-	err := runBindCmd(mockClient, "k2", "--broker", "test", "--source-property", "k2_prop=foo", "--source-property", "k2_optional=bar")
+	err := runBindCmd(mockClient, "k2", "--broker", "test", "--property", "k2_prop=foo", "--property", "k2_optional=bar")
 	assert.NilError(t, err)
 
 	recorder.Validate()
@@ -251,7 +251,7 @@ func TestBindToService(t *testing.T) {
 			},
 		},
 	}, nil)
-	err := runBindCmd(mockClient, "k3", "--service", "test", "--source-property", "k3_prop=foo")
+	err := runBindCmd(mockClient, "k3", "--service", "test", "--property", "k3_prop=foo")
 	assert.NilError(t, err)
 
 	recorder.Validate()
@@ -299,7 +299,7 @@ func TestBindAutoUpdate(t *testing.T) {
 
 	recorder.UpdateKameletBinding(binding, nil)
 
-	err := runBindCmd(mockClient, "k1", "--channel", "test", "--source-property", "k1_prop=foo")
+	err := runBindCmd(mockClient, "k1", "--channel", "test", "--property", "k1_prop=foo")
 	assert.NilError(t, err)
 
 	recorder.Validate()

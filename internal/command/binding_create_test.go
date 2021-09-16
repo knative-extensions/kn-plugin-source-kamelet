@@ -101,7 +101,7 @@ func TestBindingCreateErrorCaseUnknownProperty(t *testing.T) {
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	err := runBindingCreateCmd(mockClient, "k1-to-sink", "--kamelet", "k1", "--channel", "test", "--source-property", "k1_prop=foo", "--source-property", "foo=unknown")
+	err := runBindingCreateCmd(mockClient, "k1-to-sink", "--kamelet", "k1", "--channel", "test", "--property", "k1_prop=foo", "--property", "foo=unknown")
 	assert.Error(t, err, "binding uses unknown property \"foo\" for Kamelet \"k1\"")
 
 	recorder.Validate()
@@ -114,7 +114,7 @@ func TestBindingCreateErrorCaseUnsupportedSinkType(t *testing.T) {
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	err := runBindingCreateCmd(mockClient, "k1-to-foo", "--kamelet", "k1", "--sink", "foo:test", "--source-property", "k1_prop=foo")
+	err := runBindingCreateCmd(mockClient, "k1-to-foo", "--kamelet", "k1", "--sink", "foo:test", "--property", "k1_prop=foo")
 	assert.Error(t, err, "unsupported sink type \"foo\"")
 
 	recorder.Validate()
@@ -127,7 +127,7 @@ func TestBindingCreateErrorCaseUnsupportedSinkExpression(t *testing.T) {
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	err := runBindingCreateCmd(mockClient, "k1-to-foo", "--kamelet", "k1", "--sink", "foo", "--source-property", "k1_prop=foo")
+	err := runBindingCreateCmd(mockClient, "k1-to-foo", "--kamelet", "k1", "--sink", "foo", "--property", "k1_prop=foo")
 	assert.Error(t, err, "unsupported sink expression \"foo\" - please use format <kind>:<name>")
 
 	recorder.Validate()
@@ -169,7 +169,7 @@ func TestBindingCreateErrorCaseAlreadyExists(t *testing.T) {
 		},
 	}, k8serrors.NewAlreadyExists(v1alpha1.Resource("bindings"), "k1-to-channel-test"))
 
-	err := runBindingCreateCmd(mockClient, "k1-to-channel", "--kamelet", "k1", "--channel", "test", "--source-property", "k1_prop=foo")
+	err := runBindingCreateCmd(mockClient, "k1-to-channel", "--kamelet", "k1", "--channel", "test", "--property", "k1_prop=foo")
 	assert.Error(t, err, "kamelet binding with name \"k1-to-channel\" already exists. Use --force to recreate the binding")
 
 	recorder.Validate()
@@ -210,7 +210,7 @@ func TestBindingCreateToChannel(t *testing.T) {
 			},
 		},
 	}, nil)
-	err := runBindingCreateCmd(mockClient, "k1-to-channel", "--kamelet", "k1", "--channel", "test", "--source-property", "k1_prop=foo")
+	err := runBindingCreateCmd(mockClient, "k1-to-channel", "--kamelet", "k1", "--channel", "test", "--property", "k1_prop=foo")
 	assert.NilError(t, err)
 
 	recorder.Validate()
@@ -251,7 +251,7 @@ func TestBindingCreateToBroker(t *testing.T) {
 			},
 		},
 	}, nil)
-	err := runBindingCreateCmd(mockClient, "k2-to-broker", "--kamelet", "k2", "--broker", "test", "--source-property", "k2_prop=foo", "--source-property", "k2_optional=bar")
+	err := runBindingCreateCmd(mockClient, "k2-to-broker", "--kamelet", "k2", "--broker", "test", "--property", "k2_prop=foo", "--property", "k2_optional=bar")
 	assert.NilError(t, err)
 
 	recorder.Validate()
@@ -292,7 +292,7 @@ func TestBindingCreateToService(t *testing.T) {
 			},
 		},
 	}, nil)
-	err := runBindingCreateCmd(mockClient, "k3-to-service", "--kamelet", "k3", "--service", "test", "--source-property", "k3_prop=foo")
+	err := runBindingCreateCmd(mockClient, "k3-to-service", "--kamelet", "k3", "--service", "test", "--property", "k3_prop=foo")
 	assert.NilError(t, err)
 
 	recorder.Validate()

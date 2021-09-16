@@ -41,11 +41,11 @@ var bindingCreateExample = `
   kn-source-kamelet binding create NAME
 
   # Add a binding properties
-  kn-source-kamelet binding create NAME --kamelet=name --sink|broker|channel|service=<name> --source-property=<key>=<value>`
+  kn-source-kamelet binding create NAME --kamelet=name --sink|broker|channel|service=<name> --property=<key>=<value>`
 
 // newBindingCreateCommand implements 'kn-source-kamelet bind' command
 func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
-	var sourceProperties []string
+	var properties []string
 	var source string
 	var sink string
 	var broker string
@@ -75,7 +75,7 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 			options := CreateBindingOptions{
 				Name:             name,
 				Source:           source,
-				SourceProperties: sourceProperties,
+				SourceProperties: properties,
 				Sink:             sink,
 				Broker:           broker,
 				Channel:          channel,
@@ -100,7 +100,7 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 	flags.StringVar(&channel, "channel", "", "Uses a channel as binding sink.")
 	flags.StringVar(&service, "service", "", "Uses a Knative service as binding sink.")
 	flags.BoolVar(&force, "force", false, "Apply the changes even if the binding already exists.")
-	flags.StringArrayVar(&sourceProperties, "source-property", nil, `Add a source property in the form of "<key>=<value>"`)
+	flags.StringArrayVar(&properties, "property", nil, `Add a source property in the form of "<key>=<value>"`)
 	return cmd
 }
 
