@@ -32,7 +32,6 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/cli-runtime/pkg/genericclioptions"
 	knerrors "knative.dev/client/pkg/errors"
 	"knative.dev/client/pkg/kn/commands"
 )
@@ -52,7 +51,6 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 	var broker string
 	var channel string
 	var service string
-	var output string
 	cmd := &cobra.Command{
 		Use:     "create",
 		Short:   "Create Kamelet bindings and bind source to Knative broker, channel or service.",
@@ -83,20 +81,9 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 				Service:          service,
 			}
 
-			binding, err := createBinding(client, p.Context, namespace, options)
+			err = createBinding(client, p.Context, namespace, options)
 			if err != nil {
 				return err
-			}
-
-			if cmd.Flag("output").Changed {
-				out := cmd.OutOrStdout()
-				printFlags := genericclioptions.NewPrintFlags("")
-				printFlags.WithDefaultOutput(output)
-				printer, err := printFlags.ToPrinter()
-				if err != nil {
-					return err
-				}
-				return printer.PrintObj(binding, out)
 			}
 
 			return nil
@@ -111,23 +98,22 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 	flags.StringVar(&channel, "channel", "", "Uses a channel as binding sink.")
 	flags.StringVar(&service, "service", "", "Uses a Knative service as binding sink.")
 	flags.StringArrayVar(&sourceProperties, "source-property", nil, `Add a source property in the form of "<key>=<value>"`)
-	flags.StringVarP(&output, "output", "o", "", "Output format. One of: json|yaml|name|url")
 	return cmd
 }
 
-func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Context, namespace string, options CreateBindingOptions) (*v1alpha1.KameletBinding, error) {
+func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Context, namespace string, options CreateBindingOptions) error {
 	kamelet, err := client.Kamelets(namespace).Get(ctx, options.Source, v1.GetOptions{})
 	if err != nil {
-		return nil, knerrors.GetError(err)
+		return knerrors.GetError(err)
 	}
 
 	if !isEventSourceType(kamelet) {
-		return nil, fmt.Errorf("Kamelet %s is not an event source", options.Source)
+		return fmt.Errorf("Kamelet %s is not an event source", options.Source)
 	}
 
 	sourceProps, err := parseProperties(options.SourceProperties)
 	if err != nil {
-		return nil, knerrors.GetError(err)
+		return knerrors.GetError(err)
 	}
 	sourceEndpoint := v1alpha1.Endpoint{
 		Properties: &sourceProps,
@@ -140,7 +126,7 @@ func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Con
 	}
 
 	if err := verifyProperties(kamelet, sourceEndpoint); err != nil {
-		return nil, knerrors.GetError(err)
+		return knerrors.GetError(err)
 	}
 
 	var sinkRef corev1.ObjectReference
@@ -157,7 +143,7 @@ func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Con
 	}
 
 	if err != nil {
-		return nil, knerrors.GetError(err)
+		return knerrors.GetError(err)
 	}
 
 	if sinkRef.Namespace == "" {
@@ -188,13 +174,13 @@ func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Con
 
 		existing, err := client.KameletBindings(namespace).Get(ctx, binding.Name, v1.GetOptions{})
 		if err != nil {
-			return nil, knerrors.GetError(err)
+			return knerrors.GetError(err)
 		}
 		// Update the custom resource
 		binding.ResourceVersion = existing.ResourceVersion
 		_, err = client.KameletBindings(namespace).Update(ctx, &binding, v1.UpdateOptions{})
 		if err != nil {
-			return nil, knerrors.GetError(err)
+			return knerrors.GetError(err)
 		}
 	}
 
@@ -204,7 +190,7 @@ func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Con
 		fmt.Printf("kamelet binding \"%s\" updated\n", name)
 	}
 
-	return &binding, nil
+	return nil
 }
 
 func nameFor(name, source string, sinkRef corev1.ObjectReference) string {

@@ -132,7 +132,6 @@ Flags:
   -h, --help                          help for create
       --kamelet string                Kamelet source.
   -n, --namespace string              Specify the namespace to operate in.
-  -o, --output string                 Output format. One of: json|yaml|name|url.
       --service string                Uses a Knative service as binding sink.
       --sink string                   Sink expression to define the binding sink.
       --source-property stringArray   Add a source property in the form of "<key>=<value>"
@@ -163,7 +162,6 @@ Flags:
   -h, --help                          help for bind
       --name string                   Binding name.
   -n, --namespace string              Specify the namespace to operate in.
-  -o, --output string                 Output format. One of: json|yaml|name|url.
       --service string                Uses a Knative service as binding sink.
       --sink string                   Sink expression to define the binding sink.
       --source-property stringArray   Add a source property in the form of "<key>=<value>"

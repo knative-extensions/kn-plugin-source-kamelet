@@ -20,7 +20,6 @@ import (
 	"errors"
 
 	"github.com/spf13/cobra"
-	"k8s.io/cli-runtime/pkg/genericclioptions"
 	knerrors "knative.dev/client/pkg/errors"
 	"knative.dev/client/pkg/kn/commands"
 )
@@ -39,7 +38,6 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 	var broker string
 	var channel string
 	var service string
-	var output string
 	cmd := &cobra.Command{
 		Use:     "bind",
 		Short:   "Create Kamelet bindings and bind source to Knative broker, channel or service.",
@@ -75,20 +73,9 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 				Service:          service,
 			}
 
-			binding, err := createBinding(client, p.Context, namespace, options)
+			err = createBinding(client, p.Context, namespace, options)
 			if err != nil {
 				return err
-			}
-
-			if cmd.Flag("output").Changed {
-				out := cmd.OutOrStdout()
-				printFlags := genericclioptions.NewPrintFlags("")
-				printFlags.WithDefaultOutput(output)
-				printer, err := printFlags.ToPrinter()
-				if err != nil {
-					return err
-				}
-				return printer.PrintObj(binding, out)
 			}
 
 			return nil
@@ -103,6 +90,5 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 	flags.StringVar(&channel, "channel", "", "Uses a channel as binding sink.")
 	flags.StringVar(&service, "service", "", "Uses a Knative service as binding sink.")
 	flags.StringArrayVar(&sourceProperties, "source-property", nil, `Add a source property in the form of "<key>=<value>"`)
-	flags.StringVarP(&output, "output", "o", "", "Output format. One of: json|yaml|name|url")
 	return cmd
 }
