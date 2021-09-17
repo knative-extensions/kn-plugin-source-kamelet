@@ -96,11 +96,14 @@ func TestDescribeOutput(t *testing.T) {
 	assert.Check(t, util.ContainsAll(outputLines[5], "Provider:", "Community"))
 	assert.Check(t, util.ContainsAll(outputLines[6], "Phase:", "Ready"))
 
-	assert.Check(t, util.ContainsAll(outputLines[8], "Properties:", "k1_prop", "k1_optional"))
+	assert.Check(t, util.ContainsAll(outputLines[8], "Properties:"))
+	assert.Check(t, util.ContainsAll(outputLines[9], "Name", "Req", "Type", "Description"))
+	assert.Check(t, util.ContainsAll(outputLines[10], "k1_optional", " ", "boolean", "The k1 optional property"))
+	assert.Check(t, util.ContainsAll(outputLines[11], "k1_prop", "✓", "string", "The k1 required property"))
 
-	assert.Check(t, util.ContainsAll(outputLines[10], "Conditions:"))
-	assert.Check(t, util.ContainsAll(outputLines[11], "OK", "TYPE", "AGE", "REASON"))
-	assert.Check(t, util.ContainsAll(outputLines[12], "++", "Ready", "", ""))
+	assert.Check(t, util.ContainsAll(outputLines[13], "Conditions:"))
+	assert.Check(t, util.ContainsAll(outputLines[14], "OK", "TYPE", "AGE", "REASON"))
+	assert.Check(t, util.ContainsAll(outputLines[15], "++", "Ready", "", ""))
 
 	recorder.Validate()
 }
@@ -128,8 +131,8 @@ func TestDescribeVerboseOutput(t *testing.T) {
 
 	assert.Check(t, util.ContainsAll(outputLines[9], "Properties:"))
 	assert.Check(t, util.ContainsAll(outputLines[10], "Name", "Req", "Type", "Description"))
-	assert.Check(t, util.ContainsAll(outputLines[11], "k1_prop", "✓", "string", "The k1 required property"))
-	assert.Check(t, util.ContainsAll(outputLines[12], "k1_optional", " ", "boolean", "The k1 optional property"))
+	assert.Check(t, util.ContainsAll(outputLines[11], "k1_optional", " ", "boolean", "The k1 optional property"))
+	assert.Check(t, util.ContainsAll(outputLines[12], "k1_prop", "✓", "string", "The k1 required property"))
 
 	assert.Check(t, util.ContainsAll(outputLines[14], "Conditions:"))
 	assert.Check(t, util.ContainsAll(outputLines[15], "OK", "TYPE", "AGE", "REASON"))

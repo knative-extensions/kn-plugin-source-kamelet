@@ -19,6 +19,7 @@ package command
 import (
 	"errors"
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 
@@ -130,35 +131,24 @@ func writeKamelet(dw printers.PrefixWriter, kamelet *v1alpha1.Kamelet, printDeta
 	dw.WriteAttribute("Phase", string(kamelet.Status.Phase))
 
 	dw.WriteLine()
-	writeKameletProperties(dw, kamelet, printDetails)
+	writeKameletProperties(dw, kamelet)
 }
 
-func writeKameletProperties(dw printers.PrefixWriter, kamelet *v1alpha1.Kamelet, printDetails bool) {
-	label := "Properties"
-	if printDetails {
-		section := dw.WriteAttribute("Properties", "")
-		maxLen := getMaxPropertyNameLen(kamelet.Spec.Definition.Properties)
-		format := "%-" + maxLen + "s %-8s %-8s %s\n"
-		section.Writef(format, "Name", "Req", "Type", "Description")
-		for name, property := range kamelet.Spec.Definition.Properties {
-			section.Writef(format, name, isRequired(name, kamelet.Spec.Definition.Required), property.Type, property.Description)
-		}
-	} else {
-		result := ""
-		maxWidth := commands.TruncateAt - len(label) - 2
-		for name := range kamelet.Spec.Definition.Properties {
-			result += fmt.Sprintf("%s, ", name)
-			if len(result) > maxWidth {
-				break
-			}
-		}
-		// cut of two latest chars
-		result = strings.TrimRight(result, ", ")
-		if len(result) > maxWidth {
-			result = result[:maxWidth-4] + " ..."
-		}
+func writeKameletProperties(dw printers.PrefixWriter, kamelet *v1alpha1.Kamelet) {
+	section := dw.WriteAttribute("Properties", "")
+	maxLen := getMaxPropertyNameLen(kamelet.Spec.Definition.Properties)
+	format := "%-" + maxLen + "s %-4s %-8s %s\n"
+	section.Writef(format, "Name", "Req", "Type", "Description")
 
-		dw.WriteColsLn(printers.Label(label), result)
+	propertyNames := make([]string, 0, len(kamelet.Spec.Definition.Properties))
+	for key := range kamelet.Spec.Definition.Properties {
+		propertyNames = append(propertyNames, key)
+	}
+	sort.Strings(propertyNames)
+
+	for _, propertyName := range propertyNames {
+		property := kamelet.Spec.Definition.Properties[propertyName]
+		section.Writef(format, propertyName, isRequired(propertyName, kamelet.Spec.Definition.Required), property.Type, property.Description)
 	}
 }
 
