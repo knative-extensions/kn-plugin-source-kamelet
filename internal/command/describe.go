@@ -36,23 +36,22 @@ import (
 
 var describeExample = `
   # Describe given Kamelets
-  kn-source-kamelet describe-type NAME
+  kn-source-kamelet describe NAME
 
   # Describe given Kamelets in YAML output format
-  kn-source-kamelet describe-type NAME -o yaml`
+  kn-source-kamelet describe NAME -o yaml`
 
-// NewDescribeTypeCommand implements 'kn-source-kamelet describe-type' command
-func NewDescribeTypeCommand(p *KameletPluginParams) *cobra.Command {
+// NewDescribeCommand implements 'kn-source-kamelet describe' command
+func NewDescribeCommand(p *KameletPluginParams) *cobra.Command {
 	printFlags := genericclioptions.NewPrintFlags("")
 
 	cmd := &cobra.Command{
-		Use:     "describe-type",
+		Use:     "describe",
 		Short:   "Show details of given Kamelet source type",
-		Aliases: []string{"dt"},
 		Example: describeExample,
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			if len(args) != 1 {
-				return errors.New("'kn-source-kamelet describe-type' requires the Kamelet name given as single argument")
+				return errors.New("'kn-source-kamelet describe' requires the Kamelet name given as single argument")
 			}
 			name := args[0]
 

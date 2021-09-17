@@ -30,18 +30,18 @@ import (
 	"gotest.tools/v3/assert"
 )
 
-func TestListTypesSetup(t *testing.T) {
+func TestListSetup(t *testing.T) {
 	p := KameletPluginParams{
 		Context: context.TODO(),
 	}
 
-	listCmd := NewListTypesCommand(&p)
-	assert.Equal(t, listCmd.Use, "list-types")
+	listCmd := NewListCommand(&p)
+	assert.Equal(t, listCmd.Use, "list")
 	assert.Equal(t, listCmd.Short, "List available Kamelet source types")
 	assert.Assert(t, listCmd.RunE != nil)
 }
 
-func TestListTypesOutput(t *testing.T) {
+func TestListOutput(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
@@ -51,7 +51,7 @@ func TestListTypesOutput(t *testing.T) {
 	kameletList := &camelkapis.KameletList{Items: []camelkapis.Kamelet{*kamelet1, *kamelet2, *kamelet3}}
 	recorder.List(kameletList, nil)
 
-	output, err := runListTypesCmd(mockClient)
+	output, err := runListCmd(mockClient)
 	assert.NilError(t, err)
 
 	outputLines := strings.Split(output, "\n")
@@ -64,12 +64,12 @@ func TestListTypesOutput(t *testing.T) {
 	recorder.Validate()
 }
 
-func TestListTypesEmpty(t *testing.T) {
+func TestListEmpty(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	recorder.List(&camelkapis.KameletList{}, nil)
-	output, err := runListTypesCmd(mockClient)
+	output, err := runListCmd(mockClient)
 	assert.NilError(t, err)
 
 	assert.Assert(t, util.ContainsAll(output, "No", "resources", "found"))
@@ -77,7 +77,7 @@ func TestListTypesEmpty(t *testing.T) {
 	recorder.Validate()
 }
 
-func TestListTypesNoReadyReasonOutput(t *testing.T) {
+func TestListNoReadyReasonOutput(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
@@ -93,7 +93,7 @@ func TestListTypesNoReadyReasonOutput(t *testing.T) {
 	kameletList := &camelkapis.KameletList{Items: []camelkapis.Kamelet{*kamelet1, *kamelet2, *kamelet3}}
 	recorder.List(kameletList, nil)
 
-	output, err := runListTypesCmd(mockClient)
+	output, err := runListCmd(mockClient)
 	assert.NilError(t, err)
 
 	outputLines := strings.Split(output, "\n")
@@ -106,7 +106,7 @@ func TestListTypesNoReadyReasonOutput(t *testing.T) {
 	recorder.Validate()
 }
 
-func TestListTypesAllNamespace(t *testing.T) {
+func TestListAllNamespace(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
@@ -116,7 +116,7 @@ func TestListTypesAllNamespace(t *testing.T) {
 	kameletList := &camelkapis.KameletList{Items: []camelkapis.Kamelet{*kamelet1, *kamelet2, *kamelet3}}
 	recorder.List(kameletList, nil)
 
-	output, err := runListTypesCmd(mockClient, "--all-namespaces")
+	output, err := runListCmd(mockClient, "--all-namespaces")
 	assert.NilError(t, err)
 
 	outputLines := strings.Split(output, "\n")
@@ -128,7 +128,7 @@ func TestListTypesAllNamespace(t *testing.T) {
 	recorder.Validate()
 }
 
-func runListTypesCmd(c *client.MockClient, options ...string) (string, error) {
+func runListCmd(c *client.MockClient, options ...string) (string, error) {
 	p := KameletPluginParams{
 		KnParams: &commands.KnParams{},
 		Context:  context.TODO(),
@@ -137,9 +137,9 @@ func runListTypesCmd(c *client.MockClient, options ...string) (string, error) {
 		},
 	}
 
-	listCmd, _, output := commands.CreateSourcesTestKnCommand(NewListTypesCommand(&p), p.KnParams)
+	listCmd, _, output := commands.CreateSourcesTestKnCommand(NewListCommand(&p), p.KnParams)
 
-	args := []string{"list-types"}
+	args := []string{"list"}
 	args = append(args, options...)
 	listCmd.SetArgs(args)
 	err := listCmd.Execute()

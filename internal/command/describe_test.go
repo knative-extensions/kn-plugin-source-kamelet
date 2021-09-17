@@ -30,38 +30,38 @@ import (
 	"gotest.tools/v3/assert"
 )
 
-func TestDescribeTypeSetup(t *testing.T) {
+func TestDescribeSetup(t *testing.T) {
 	p := KameletPluginParams{
 		Context: context.TODO(),
 	}
 
-	describeCmd := NewDescribeTypeCommand(&p)
-	assert.Equal(t, describeCmd.Use, "describe-type")
+	describeCmd := NewDescribeCommand(&p)
+	assert.Equal(t, describeCmd.Use, "describe")
 	assert.Equal(t, describeCmd.Short, "Show details of given Kamelet source type")
 	assert.Assert(t, describeCmd.RunE != nil)
 }
-func TestDescribeTypeErrorCase(t *testing.T) {
+func TestDescribeErrorCase(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
-	_, err := runDescribeTypeCmd(mockClient)
-	assert.Error(t, err, "'kn-source-kamelet describe-type' requires the Kamelet name given as single argument")
+	_, err := runDescribeCmd(mockClient)
+	assert.Error(t, err, "'kn-source-kamelet describe' requires the Kamelet name given as single argument")
 	recorder.Validate()
 }
 
-func TestDescribeTypeErrorCaseNotFound(t *testing.T) {
+func TestDescribeErrorCaseNotFound(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, errors.New("not found"))
 
-	_, err := runDescribeTypeCmd(mockClient, "k1")
+	_, err := runDescribeCmd(mockClient, "k1")
 	assert.Error(t, err, "not found")
 	recorder.Validate()
 }
 
-func TestDescribeTypeErrorCaseNoEventSource(t *testing.T) {
+func TestDescribeErrorCaseNoEventSource(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
@@ -71,19 +71,19 @@ func TestDescribeTypeErrorCaseNoEventSource(t *testing.T) {
 	}
 	recorder.Get(kamelet, nil)
 
-	_, err := runDescribeTypeCmd(mockClient, "k1")
+	_, err := runDescribeCmd(mockClient, "k1")
 	assert.Error(t, err, "Kamelet k1 is not an event source")
 	recorder.Validate()
 }
 
-func TestDescribeTypeOutput(t *testing.T) {
+func TestDescribeOutput(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	output, err := runDescribeTypeCmd(mockClient, "k1")
+	output, err := runDescribeCmd(mockClient, "k1")
 	assert.NilError(t, err)
 
 	outputLines := strings.Split(output, "\n")
@@ -105,14 +105,14 @@ func TestDescribeTypeOutput(t *testing.T) {
 	recorder.Validate()
 }
 
-func TestDescribeTypeVerboseOutput(t *testing.T) {
+func TestDescribeVerboseOutput(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	output, err := runDescribeTypeCmd(mockClient, "k1", "--verbose")
+	output, err := runDescribeCmd(mockClient, "k1", "--verbose")
 	assert.NilError(t, err)
 
 	outputLines := strings.Split(output, "\n")
@@ -138,14 +138,14 @@ func TestDescribeTypeVerboseOutput(t *testing.T) {
 	recorder.Validate()
 }
 
-func TestDescribeTypeURL(t *testing.T) {
+func TestDescribeURL(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	output, err := runDescribeTypeCmd(mockClient, "k1", "-o", "url")
+	output, err := runDescribeCmd(mockClient, "k1", "-o", "url")
 	assert.NilError(t, err, "Kamelet should be described with url as output")
 
 	outputLines := strings.Split(output, "\n")
@@ -154,7 +154,7 @@ func TestDescribeTypeURL(t *testing.T) {
 	recorder.Validate()
 }
 
-func runDescribeTypeCmd(c *client.MockClient, options ...string) (string, error) {
+func runDescribeCmd(c *client.MockClient, options ...string) (string, error) {
 	p := KameletPluginParams{
 		KnParams: &commands.KnParams{},
 		Context:  context.TODO(),
@@ -163,9 +163,9 @@ func runDescribeTypeCmd(c *client.MockClient, options ...string) (string, error)
 		},
 	}
 
-	describeCmd, _, output := commands.CreateSourcesTestKnCommand(NewDescribeTypeCommand(&p), p.KnParams)
+	describeCmd, _, output := commands.CreateSourcesTestKnCommand(NewDescribeCommand(&p), p.KnParams)
 
-	args := []string{"describe-type"}
+	args := []string{"describe"}
 	args = append(args, options...)
 	describeCmd.SetArgs(args)
 	err := describeCmd.Execute()
