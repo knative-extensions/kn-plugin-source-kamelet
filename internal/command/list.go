@@ -33,19 +33,19 @@ import (
 
 var listExample = `
   # List available Kamelets
-  kn-source-kamelet list-types
+  kn-source-kamelet list
 
   # List available Kamelets in YAML output format
-  kn-source-kamelet list-types -o yaml`
+  kn-source-kamelet list -o yaml`
 
-// NewListTypesCommand implements 'kn-source-kamelet list-types' command
-func NewListTypesCommand(p *KameletPluginParams) *cobra.Command {
+// NewListCommand implements 'kn-source-kamelet list' command
+func NewListCommand(p *KameletPluginParams) *cobra.Command {
 	kameletListFlags := flags.NewListPrintFlags(ListHandlers)
 
 	cmd := &cobra.Command{
-		Use:     "list-types",
+		Use:     "list",
 		Short:   "List available Kamelet source types",
-		Aliases: []string{"lst"},
+		Aliases: []string{"ls"},
 		Example: listExample,
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			namespace, err := p.GetNamespace(cmd)
@@ -88,7 +88,7 @@ func NewListTypesCommand(p *KameletPluginParams) *cobra.Command {
 	return cmd
 }
 
-// ListHandlers handles printing human readable table for `kn-source-kamelet list-types` command's output
+// ListHandlers handles printing human readable table for `kn-source-kamelet list` command's output
 func ListHandlers(h hprinters.PrintHandler) {
 	kameletColumnDefinitions := []metav1beta1.TableColumnDefinition{
 		{Name: "Namespace", Type: "string", Description: "Namespace of the Kamelet instance", Priority: 0},

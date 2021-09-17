@@ -4,3 +4,8 @@
 
 # Binaries
 kn-source-kamelet
+
+# Vendor specific files
+vendor/**/BUILD.bazel
+vendor/**/OWNERS
+vendor/**/OWNERS_ALIASES
