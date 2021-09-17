@@ -21,15 +21,14 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	corev1 "k8s.io/api/core/v1"
-	k8serrors "k8s.io/apimachinery/pkg/api/errors"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	messagingv1 "knative.dev/eventing/pkg/apis/messaging/v1"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
 
+	"github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
+	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	"knative.dev/client/pkg/kn/commands"
 	"knative.dev/kn-plugin-source-kamelet/internal/client"
 
@@ -45,6 +44,7 @@ func TestBindingCreateSetup(t *testing.T) {
 	assert.Equal(t, command.Use, "create")
 	assert.Equal(t, command.Short, "Create Kamelet bindings and bind source to Knative broker, channel or service.")
 }
+
 func TestBindingCreateErrorCaseMissingArgument(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
@@ -141,33 +141,12 @@ func TestBindingCreateErrorCaseAlreadyExists(t *testing.T) {
 	kamelet := createKameletInNamespace("k1", namespace)
 	recorder.Get(kamelet, nil)
 
-	recorder.CreateKameletBinding(&v1alpha1.KameletBinding{
-		ObjectMeta: v1.ObjectMeta{
-			Namespace: namespace,
-			Name:      "k1-to-channel",
-		},
-		Spec: v1alpha1.KameletBindingSpec{
-			Source: v1alpha1.Endpoint{
-				Properties: &v1alpha1.EndpointProperties{
-					RawMessage: []byte("{\"k1_prop\":\"foo\"}"),
-				},
-				Ref: &corev1.ObjectReference{
-					Kind:       v1alpha1.KameletKind,
-					APIVersion: v1alpha1.SchemeGroupVersion.String(),
-					Namespace:  namespace,
-					Name:       "k1",
-				},
-			},
-			Sink: v1alpha1.Endpoint{
-				Ref: &corev1.ObjectReference{
-					Kind:       "Channel",
-					APIVersion: messagingv1.SchemeGroupVersion.String(),
-					Namespace:  namespace,
-					Name:       "test",
-				},
-			},
-		},
-	}, k8serrors.NewAlreadyExists(v1alpha1.Resource("bindings"), "k1-to-channel-test"))
+	recorder.CreateKameletBinding(createKameletBindingInNamespace("k1-to-channel", "k1", namespace, &corev1.ObjectReference{
+		Kind:       "Channel",
+		APIVersion: messagingv1.SchemeGroupVersion.String(),
+		Namespace:  namespace,
+		Name:       "test",
+	}), k8serrors.NewAlreadyExists(v1alpha1.Resource("bindings"), "k1-to-channel-test"))
 
 	err := runBindingCreateCmd(mockClient, "k1-to-channel", "--kamelet", "k1", "--channel", "test", "--property", "k1_prop=foo")
 	assert.Error(t, err, "kamelet binding with name \"k1-to-channel\" already exists. Use --force to recreate the binding")
@@ -183,33 +162,12 @@ func TestBindingCreateToChannel(t *testing.T) {
 	kamelet := createKameletInNamespace("k1", namespace)
 	recorder.Get(kamelet, nil)
 
-	recorder.CreateKameletBinding(&v1alpha1.KameletBinding{
-		ObjectMeta: v1.ObjectMeta{
-			Namespace: namespace,
-			Name:      "k1-to-channel",
-		},
-		Spec: v1alpha1.KameletBindingSpec{
-			Source: v1alpha1.Endpoint{
-				Properties: &v1alpha1.EndpointProperties{
-					RawMessage: []byte("{\"k1_prop\":\"foo\"}"),
-				},
-				Ref: &corev1.ObjectReference{
-					Kind:       v1alpha1.KameletKind,
-					APIVersion: v1alpha1.SchemeGroupVersion.String(),
-					Namespace:  namespace,
-					Name:       "k1",
-				},
-			},
-			Sink: v1alpha1.Endpoint{
-				Ref: &corev1.ObjectReference{
-					Kind:       "Channel",
-					APIVersion: messagingv1.SchemeGroupVersion.String(),
-					Namespace:  namespace,
-					Name:       "test",
-				},
-			},
-		},
-	}, nil)
+	recorder.CreateKameletBinding(createKameletBindingInNamespace("k1-to-channel", "k1", namespace, &corev1.ObjectReference{
+		Kind:       "Channel",
+		APIVersion: messagingv1.SchemeGroupVersion.String(),
+		Namespace:  namespace,
+		Name:       "test",
+	}), nil)
 	err := runBindingCreateCmd(mockClient, "k1-to-channel", "--kamelet", "k1", "--channel", "test", "--property", "k1_prop=foo")
 	assert.NilError(t, err)
 
@@ -224,33 +182,16 @@ func TestBindingCreateToBroker(t *testing.T) {
 	kamelet := createKameletInNamespace("k2", namespace)
 	recorder.Get(kamelet, nil)
 
-	recorder.CreateKameletBinding(&v1alpha1.KameletBinding{
-		ObjectMeta: v1.ObjectMeta{
-			Namespace: namespace,
-			Name:      "k2-to-broker",
-		},
-		Spec: v1alpha1.KameletBindingSpec{
-			Source: v1alpha1.Endpoint{
-				Properties: &v1alpha1.EndpointProperties{
-					RawMessage: []byte("{\"k2_optional\":\"bar\",\"k2_prop\":\"foo\"}"),
-				},
-				Ref: &corev1.ObjectReference{
-					Kind:       v1alpha1.KameletKind,
-					APIVersion: v1alpha1.SchemeGroupVersion.String(),
-					Namespace:  namespace,
-					Name:       "k2",
-				},
-			},
-			Sink: v1alpha1.Endpoint{
-				Ref: &corev1.ObjectReference{
-					Kind:       "Broker",
-					APIVersion: eventingv1.SchemeGroupVersion.String(),
-					Namespace:  namespace,
-					Name:       "test",
-				},
-			},
-		},
-	}, nil)
+	binding := createKameletBindingInNamespace("k2-to-broker", "k2", namespace, &corev1.ObjectReference{
+		Kind:       "Broker",
+		APIVersion: eventingv1.SchemeGroupVersion.String(),
+		Namespace:  namespace,
+		Name:       "test",
+	})
+
+	binding.Spec.Source.Properties.RawMessage = []byte("{\"k2_optional\":\"bar\",\"k2_prop\":\"foo\"}")
+
+	recorder.CreateKameletBinding(binding, nil)
 	err := runBindingCreateCmd(mockClient, "k2-to-broker", "--kamelet", "k2", "--broker", "test", "--property", "k2_prop=foo", "--property", "k2_optional=bar")
 	assert.NilError(t, err)
 
@@ -265,33 +206,12 @@ func TestBindingCreateToService(t *testing.T) {
 	kamelet := createKameletInNamespace("k3", namespace)
 	recorder.Get(kamelet, nil)
 
-	recorder.CreateKameletBinding(&v1alpha1.KameletBinding{
-		ObjectMeta: v1.ObjectMeta{
-			Namespace: namespace,
-			Name:      "k3-to-service",
-		},
-		Spec: v1alpha1.KameletBindingSpec{
-			Source: v1alpha1.Endpoint{
-				Properties: &v1alpha1.EndpointProperties{
-					RawMessage: []byte("{\"k3_prop\":\"foo\"}"),
-				},
-				Ref: &corev1.ObjectReference{
-					Kind:       v1alpha1.KameletKind,
-					APIVersion: v1alpha1.SchemeGroupVersion.String(),
-					Namespace:  namespace,
-					Name:       "k3",
-				},
-			},
-			Sink: v1alpha1.Endpoint{
-				Ref: &corev1.ObjectReference{
-					Kind:       "Service",
-					APIVersion: servingv1.SchemeGroupVersion.String(),
-					Namespace:  namespace,
-					Name:       "test",
-				},
-			},
-		},
-	}, nil)
+	recorder.CreateKameletBinding(createKameletBindingInNamespace("k3-to-service", "k3", namespace, &corev1.ObjectReference{
+		Kind:       "Service",
+		APIVersion: servingv1.SchemeGroupVersion.String(),
+		Namespace:  namespace,
+		Name:       "test",
+	}), nil)
 	err := runBindingCreateCmd(mockClient, "k3-to-service", "--kamelet", "k3", "--service", "test", "--property", "k3_prop=foo")
 	assert.NilError(t, err)
 

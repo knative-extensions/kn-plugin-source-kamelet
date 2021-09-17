@@ -74,3 +74,45 @@ func createKameletInNamespace(kameletName string, namespace string) *camelkv1alp
 		},
 	}
 }
+
+func createKameletBinding(bindingName string, kameletName string, sink *corev1.ObjectReference) *camelkv1alpha1.KameletBinding {
+	return createKameletBindingInNamespace(bindingName, kameletName, "default", sink)
+}
+
+func createKameletBindingInNamespace(bindingName string, kameletName string,
+	namespace string, sink *corev1.ObjectReference) *camelkv1alpha1.KameletBinding {
+	return &camelkv1alpha1.KameletBinding{
+		ObjectMeta: v1.ObjectMeta{
+			Namespace: namespace,
+			Name:      bindingName,
+		},
+		Spec: camelkv1alpha1.KameletBindingSpec{
+			Source: camelkv1alpha1.Endpoint{
+				Properties: &camelkv1alpha1.EndpointProperties{
+					RawMessage: []byte(fmt.Sprintf("{\"%s_prop\":\"foo\"}", kameletName)),
+				},
+				Ref: &corev1.ObjectReference{
+					Kind:       camelkv1alpha1.KameletKind,
+					APIVersion: camelkv1alpha1.SchemeGroupVersion.String(),
+					Namespace:  namespace,
+					Name:       kameletName,
+				},
+			},
+			Sink: camelkv1alpha1.Endpoint{
+				Ref: sink,
+			},
+		},
+	}
+}
+
+func statusReady() camelkv1alpha1.KameletBindingStatus {
+	return camelkv1alpha1.KameletBindingStatus{
+		Phase: camelkv1alpha1.KameletBindingPhaseReady,
+		Conditions: []camelkv1alpha1.KameletBindingCondition{
+			{
+				Type:   camelkv1alpha1.KameletBindingConditionReady,
+				Status: corev1.ConditionTrue,
+			},
+		},
+	}
+}

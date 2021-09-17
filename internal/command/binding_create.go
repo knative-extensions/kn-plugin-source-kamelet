@@ -43,7 +43,7 @@ var bindingCreateExample = `
   # Add a binding properties
   kn-source-kamelet binding create NAME --kamelet=name --sink|broker|channel|service=<name> --property=<key>=<value>`
 
-// newBindingCreateCommand implements 'kn-source-kamelet bind' command
+// newBindingCreateCommand implements 'kn-source-kamelet binding create' command
 func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 	var properties []string
 	var source string
