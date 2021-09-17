@@ -192,7 +192,13 @@ func (c *MockKameletBindingsClient) Create(ctx context.Context, binding *camelka
 }
 
 func (c *MockKameletBindingsClient) Update(ctx context.Context, binding *camelkapis.KameletBinding, opts v1.UpdateOptions) (*camelkapis.KameletBinding, error) {
-	panic("implement me")
+	call := c.recorder.r.VerifyCall("Update")
+	return call.Result[0].(*camelkapis.KameletBinding), mock.ErrorOrNil(call.Result[1])
+}
+
+// UpdateKameletBinding records a call for Update with the expected result and error (nil if none)
+func (sr *KameletRecorder) UpdateKameletBinding(binding *camelkapis.KameletBinding, err error) {
+	sr.r.Add("Update", nil, []interface{}{binding, err})
 }
 
 func (c *MockKameletBindingsClient) UpdateStatus(ctx context.Context, binding *camelkapis.KameletBinding, opts v1.UpdateOptions) (*camelkapis.KameletBinding, error) {

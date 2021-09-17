@@ -1,43 +1,175 @@
-== kn-source-kamelet
+= kn-source-kamelet
 
-`kn-source-kamelet` Knative eventing sources plugin manages Kamelet sources on your cluster.
+`kn-source-kamelet` Knative eventing sources plugin manages Kamelet event sources on your cluster.
 
-=== Description
+== Description
 
-With this plugin, you can list available Kamelets and use those in KameletBindings as Knative eventing sources.
+With this plugin, you can list available Kamelets and bindings on your cluster.
+Kamelets can act as Knative eventing sources where each binding connects a Kamelet source to a Knative sink (broker, channel, service).
 
-=== Usage
+== Usage
 
 ----
-Manages Kamelets and KameletBindings as Knative eventing sources.
+Plugin manages Kamelets and KameletBindings as Knative eventing sources.
 
 Usage:
   kn-source-kamelet [command]
 
 Available Commands:
-  help        Help about any command
-  list        List available Kamelet sources
-  version     Prints the plugin version
+  bind          Create Kamelet bindings and bind source to Knative broker, channel or service.
+  binding       Configure and manage a Kamelet binding.
+  completion    generate the autocompletion script for the specified shell
+  describe-type Show details of given Kamelet source type
+  help          Help about any command
+  list-types    List available Kamelet source types
+  version       Prints the plugin version
 
 Flags:
-  -h, --help   help for kn-plugin-source-kamelet
+  -h, --help   help for kn-source-kamelet
 
 Use "kn-source-kamelet [command] --help" for more information about a command.
 ----
 
-==== `kn-source-kamelet list`
+== Commands
+
+=== `list-types`
 
 ----
-List available Kamelet sources
+List available Kamelet source types
 
 Usage:
-  kn-source-kamelet list [flags]
+  kn-source-kamelet list-types [flags]
+
+Aliases:
+  list-types, lst
+
+Examples:
+
+  # List available Kamelets
+  kn-source-kamelet list-types
+
+  # List available Kamelets in YAML output format
+  kn-source-kamelet list-types -o yaml
 
 Flags:
-  -h, --help   help for list
+  -A, --all-namespaces                If present, list the requested object(s) across all namespaces. Namespace in current context is ignored even if specified with --namespace.
+      --allow-missing-template-keys   If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)
+  -h, --help                          help for list-types
+  -n, --namespace string              Specify the namespace to operate in.
+      --no-headers                    When using the default output format, don't print headers (default: print headers).
+  -o, --output string                 Output format. One of: json|yaml|name|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-as-json|jsonpath-file.
+      --show-managed-fields           If true, keep the managedFields when printing objects in JSON or YAML format.
+      --template string               Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
 ----
 
-==== `kn-source-kamelet version`
+=== `describe-type`
+
+----
+Show details of given Kamelet source type
+
+Usage:
+  kn-source-kamelet describe-type [flags]
+
+Aliases:
+  describe-type, dt
+
+Examples:
+
+  # Describe given Kamelets
+  kn-source-kamelet describe-type NAME
+
+  # Describe given Kamelets in YAML output format
+  kn-source-kamelet describe-type NAME -o yaml
+
+Flags:
+  -h, --help                          help for describe-type
+  -n, --namespace string              Specify the namespace to operate in.
+  -o, --output string                 Output format. One of: json|yaml|name|url.
+  -v, --verbose                       More output.
+----
+
+=== `binding`
+
+----
+Configure and manage a Kamelet binding.
+
+Usage:
+  kn-source-kamelet binding [command]
+
+Examples:
+
+  # Configure and manage a Kamelet binding.
+  kn-source-kamelet binding create|update|delete
+
+Available Commands:
+  create      Create Kamelet bindings and bind source to Knative broker, channel or service.
+
+Flags:
+  -h, --help   help for binding
+
+Use "kn-source-kamelet binding [command] --help" for more information about a command.
+----
+
+==== `binding create`
+
+----
+Create Kamelet bindings and bind source to Knative broker, channel or service.
+
+Usage:
+  kn-source-kamelet binding create [flags]
+
+Examples:
+
+  # Create Kamelet binding with source and sink.
+  kn-source-kamelet binding create NAME
+
+  # Add a binding properties
+  kn-source-kamelet binding create NAME --kamelet=name --sink|broker|channel|service=<name> --property=<key>=<value>
+
+Flags:
+      --broker string                 Uses a broker as binding sink.
+      --channel string                Uses a channel as binding sink.
+  -h, --help                          help for create
+      --force bool                    Apply the changes even if the binding already exists.
+      --kamelet string                Kamelet source.
+  -n, --namespace string              Specify the namespace to operate in.
+      --service string                Uses a Knative service as binding sink.
+  -s  --sink string                   Sink expression to define the binding sink.
+      --property stringArray   Add a source property in the form of "<key>=<value>"
+----
+
+=== `bind`
+
+Shortcut version of `kn-source-kamelet binding create` with Kamelet source as positional argument.
+The shortcut command auto generates a binding name in case no explicit name is given as command option `--name`.
+
+----
+Create Kamelet bindings and bind source to Knative broker, channel or service.
+
+Usage:
+  kn-source-kamelet bind [flags]
+
+Examples:
+
+  # Bind Kamelets to a Knative sink
+  kn-source-kamelet bind SOURCE
+
+  # Add a binding properties
+  kn-source-kamelet bind SOURCE --sink|broker|channel|service=<name> --property=<key>=<value>
+
+Flags:
+      --broker string                 Uses a broker as binding sink.
+      --channel string                Uses a channel as binding sink.
+  -h, --help                          help for bind
+      --force bool                    Apply the changes even if the binding already exists.
+      --name string                   Binding name.
+  -n, --namespace string              Specify the namespace to operate in.
+      --service string                Uses a Knative service as binding sink.
+  -s  --sink string                   Sink expression to define the binding sink.
+      --property stringArray   Add a source property in the form of "<key>=<value>"
+----
+
+=== `version`
 
 This command prints out the version of this plugin and all extra information which might help, for example when creating
 bug reports.
@@ -52,9 +184,9 @@ Flags:
   -h, --help   help for version
 ----
 
-=== Examples
+== Examples
 
-==== List available Kamelet sources
+=== List available Kamelet sources
 
 You want to list all available Kamelets on your cluster.
 In this case, you can use the `kn-source-kamelet list` command.
@@ -70,7 +202,7 @@ Kamelet_3
 ----
 ====
 
-==== Print out the version of this plugin
+=== Print out the version of this plugin
 
 The `kn-source-kamelet version` command helps you to identify the version of this plugin.
 

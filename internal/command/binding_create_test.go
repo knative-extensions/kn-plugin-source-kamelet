@@ -36,38 +36,37 @@ import (
 	"gotest.tools/v3/assert"
 )
 
-func TestBindSetup(t *testing.T) {
+func TestBindingCreateSetup(t *testing.T) {
 	p := KameletPluginParams{
 		Context: context.TODO(),
 	}
 
-	bindCmd := NewBindCommand(&p)
-	assert.Equal(t, bindCmd.Use, "bind")
-	assert.Equal(t, bindCmd.Short, "Create Kamelet bindings and bind source to Knative broker, channel or service.")
-	assert.Assert(t, bindCmd.RunE != nil)
+	command := newBindingCreateCommand(&p)
+	assert.Equal(t, command.Use, "create")
+	assert.Equal(t, command.Short, "Create Kamelet bindings and bind source to Knative broker, channel or service.")
 }
-func TestBindErrorCaseMissingArgument(t *testing.T) {
+func TestBindingCreateErrorCaseMissingArgument(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
-	err := runBindCmd(mockClient)
-	assert.Error(t, err, "'kn-source-kamelet bind' requires the Kamelet source as argument")
+	err := runBindingCreateCmd(mockClient)
+	assert.Error(t, err, "'kn-source-kamelet binding create' requires the binding name as argument")
 	recorder.Validate()
 }
 
-func TestBindErrorCaseNotFound(t *testing.T) {
+func TestBindingCreateErrorCaseNotFound(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, errors.New("not found"))
 
-	err := runBindCmd(mockClient, "k1", "--channel", "test")
+	err := runBindingCreateCmd(mockClient, "k1-to-sink", "--kamelet", "k1", "--channel", "test")
 	assert.Error(t, err, "not found")
 	recorder.Validate()
 }
 
-func TestBindErrorCaseNoEventSource(t *testing.T) {
+func TestBindingCreateErrorCaseNoEventSource(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
@@ -77,64 +76,64 @@ func TestBindErrorCaseNoEventSource(t *testing.T) {
 	}
 	recorder.Get(kamelet, nil)
 
-	err := runBindCmd(mockClient, "k1", "--channel", "test")
+	err := runBindingCreateCmd(mockClient, "k1-to-sink", "--kamelet", "k1", "--channel", "test")
 	assert.Error(t, err, "Kamelet k1 is not an event source")
 	recorder.Validate()
 }
 
-func TestBindErrorCaseMissingRequiredProperty(t *testing.T) {
+func TestBindingCreateErrorCaseMissingRequiredProperty(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	err := runBindCmd(mockClient, "k1", "--channel", "test")
+	err := runBindingCreateCmd(mockClient, "k1-to-sink", "--kamelet", "k1", "--channel", "test")
 	assert.Error(t, err, "binding is missing required property \"k1_prop\" for Kamelet \"k1\"")
 
 	recorder.Validate()
 }
 
-func TestBindErrorCaseUnknownProperty(t *testing.T) {
+func TestBindingCreateErrorCaseUnknownProperty(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	err := runBindCmd(mockClient, "k1", "--channel", "test", "--property", "k1_prop=foo", "--property", "foo=unknown")
+	err := runBindingCreateCmd(mockClient, "k1-to-sink", "--kamelet", "k1", "--channel", "test", "--property", "k1_prop=foo", "--property", "foo=unknown")
 	assert.Error(t, err, "binding uses unknown property \"foo\" for Kamelet \"k1\"")
 
 	recorder.Validate()
 }
 
-func TestBindErrorCaseUnsupportedSinkType(t *testing.T) {
+func TestBindingCreateErrorCaseUnsupportedSinkType(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	err := runBindCmd(mockClient, "k1", "--sink", "foo:test", "--property", "k1_prop=foo")
+	err := runBindingCreateCmd(mockClient, "k1-to-foo", "--kamelet", "k1", "--sink", "foo:test", "--property", "k1_prop=foo")
 	assert.Error(t, err, "unsupported sink type \"foo\"")
 
 	recorder.Validate()
 }
 
-func TestBindErrorCaseUnsupportedSinkExpression(t *testing.T) {
+func TestBindingCreateErrorCaseUnsupportedSinkExpression(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
 	kamelet := createKamelet("k1")
 	recorder.Get(kamelet, nil)
 
-	err := runBindCmd(mockClient, "k1", "--sink", "foo", "--property", "k1_prop=foo")
+	err := runBindingCreateCmd(mockClient, "k1-to-foo", "--kamelet", "k1", "--sink", "foo", "--property", "k1_prop=foo")
 	assert.Error(t, err, "unsupported sink expression \"foo\" - please use format <kind>:<name>")
 
 	recorder.Validate()
 }
 
-func TestBindToChannel(t *testing.T) {
+func TestBindingCreateErrorCaseAlreadyExists(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
@@ -145,7 +144,49 @@ func TestBindToChannel(t *testing.T) {
 	recorder.CreateKameletBinding(&v1alpha1.KameletBinding{
 		ObjectMeta: v1.ObjectMeta{
 			Namespace: namespace,
-			Name:      "k1-to-channel-test",
+			Name:      "k1-to-channel",
+		},
+		Spec: v1alpha1.KameletBindingSpec{
+			Source: v1alpha1.Endpoint{
+				Properties: &v1alpha1.EndpointProperties{
+					RawMessage: []byte("{\"k1_prop\":\"foo\"}"),
+				},
+				Ref: &corev1.ObjectReference{
+					Kind:       v1alpha1.KameletKind,
+					APIVersion: v1alpha1.SchemeGroupVersion.String(),
+					Namespace:  namespace,
+					Name:       "k1",
+				},
+			},
+			Sink: v1alpha1.Endpoint{
+				Ref: &corev1.ObjectReference{
+					Kind:       "Channel",
+					APIVersion: messagingv1.SchemeGroupVersion.String(),
+					Namespace:  namespace,
+					Name:       "test",
+				},
+			},
+		},
+	}, k8serrors.NewAlreadyExists(v1alpha1.Resource("bindings"), "k1-to-channel-test"))
+
+	err := runBindingCreateCmd(mockClient, "k1-to-channel", "--kamelet", "k1", "--channel", "test", "--property", "k1_prop=foo")
+	assert.Error(t, err, "kamelet binding with name \"k1-to-channel\" already exists. Use --force to recreate the binding")
+
+	recorder.Validate()
+}
+
+func TestBindingCreateToChannel(t *testing.T) {
+	mockClient := client.NewMockClient(t)
+	recorder := mockClient.Recorder()
+
+	namespace := "current"
+	kamelet := createKameletInNamespace("k1", namespace)
+	recorder.Get(kamelet, nil)
+
+	recorder.CreateKameletBinding(&v1alpha1.KameletBinding{
+		ObjectMeta: v1.ObjectMeta{
+			Namespace: namespace,
+			Name:      "k1-to-channel",
 		},
 		Spec: v1alpha1.KameletBindingSpec{
 			Source: v1alpha1.Endpoint{
@@ -169,13 +210,13 @@ func TestBindToChannel(t *testing.T) {
 			},
 		},
 	}, nil)
-	err := runBindCmd(mockClient, "k1", "--channel", "test", "--property", "k1_prop=foo")
+	err := runBindingCreateCmd(mockClient, "k1-to-channel", "--kamelet", "k1", "--channel", "test", "--property", "k1_prop=foo")
 	assert.NilError(t, err)
 
 	recorder.Validate()
 }
 
-func TestBindToBroker(t *testing.T) {
+func TestBindingCreateToBroker(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
@@ -186,7 +227,7 @@ func TestBindToBroker(t *testing.T) {
 	recorder.CreateKameletBinding(&v1alpha1.KameletBinding{
 		ObjectMeta: v1.ObjectMeta{
 			Namespace: namespace,
-			Name:      "k2-to-broker-test",
+			Name:      "k2-to-broker",
 		},
 		Spec: v1alpha1.KameletBindingSpec{
 			Source: v1alpha1.Endpoint{
@@ -210,13 +251,13 @@ func TestBindToBroker(t *testing.T) {
 			},
 		},
 	}, nil)
-	err := runBindCmd(mockClient, "k2", "--broker", "test", "--property", "k2_prop=foo", "--property", "k2_optional=bar")
+	err := runBindingCreateCmd(mockClient, "k2-to-broker", "--kamelet", "k2", "--broker", "test", "--property", "k2_prop=foo", "--property", "k2_optional=bar")
 	assert.NilError(t, err)
 
 	recorder.Validate()
 }
 
-func TestBindToService(t *testing.T) {
+func TestBindingCreateToService(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
 
@@ -227,7 +268,7 @@ func TestBindToService(t *testing.T) {
 	recorder.CreateKameletBinding(&v1alpha1.KameletBinding{
 		ObjectMeta: v1.ObjectMeta{
 			Namespace: namespace,
-			Name:      "k3-to-service-test",
+			Name:      "k3-to-service",
 		},
 		Spec: v1alpha1.KameletBindingSpec{
 			Source: v1alpha1.Endpoint{
@@ -251,61 +292,13 @@ func TestBindToService(t *testing.T) {
 			},
 		},
 	}, nil)
-	err := runBindCmd(mockClient, "k3", "--service", "test", "--property", "k3_prop=foo")
+	err := runBindingCreateCmd(mockClient, "k3-to-service", "--kamelet", "k3", "--service", "test", "--property", "k3_prop=foo")
 	assert.NilError(t, err)
 
 	recorder.Validate()
 }
 
-func TestBindAutoUpdate(t *testing.T) {
-	mockClient := client.NewMockClient(t)
-	recorder := mockClient.Recorder()
-
-	namespace := "current"
-	kamelet := createKameletInNamespace("k1", namespace)
-	recorder.Get(kamelet, nil)
-
-	binding := &v1alpha1.KameletBinding{
-		ObjectMeta: v1.ObjectMeta{
-			Namespace: namespace,
-			Name:      "k1-to-channel-test",
-		},
-		Spec: v1alpha1.KameletBindingSpec{
-			Source: v1alpha1.Endpoint{
-				Properties: &v1alpha1.EndpointProperties{
-					RawMessage: []byte("{\"k1_prop\":\"foo\"}"),
-				},
-				Ref: &corev1.ObjectReference{
-					Kind:       v1alpha1.KameletKind,
-					APIVersion: v1alpha1.SchemeGroupVersion.String(),
-					Namespace:  namespace,
-					Name:       "k1",
-				},
-			},
-			Sink: v1alpha1.Endpoint{
-				Ref: &corev1.ObjectReference{
-					Kind:       "Channel",
-					APIVersion: messagingv1.SchemeGroupVersion.String(),
-					Namespace:  namespace,
-					Name:       "test",
-				},
-			},
-		},
-	}
-
-	recorder.CreateKameletBinding(binding, k8serrors.NewAlreadyExists(v1alpha1.Resource("bindings"), "k1-to-channel-test"))
-
-	recorder.GetKameletBinding(binding, nil)
-
-	recorder.UpdateKameletBinding(binding, nil)
-
-	err := runBindCmd(mockClient, "k1", "--channel", "test", "--property", "k1_prop=foo")
-	assert.NilError(t, err)
-
-	recorder.Validate()
-}
-
-func runBindCmd(c *client.MockClient, options ...string) error {
+func runBindingCreateCmd(c *client.MockClient, options ...string) error {
 	p := KameletPluginParams{
 		KnParams: &commands.KnParams{},
 		Context:  context.TODO(),
@@ -314,12 +307,12 @@ func runBindCmd(c *client.MockClient, options ...string) error {
 		},
 	}
 
-	bindCmd, _, _ := commands.CreateSourcesTestKnCommand(NewBindCommand(&p), p.KnParams)
+	command, _, _ := commands.CreateSourcesTestKnCommand(newBindingCreateCommand(&p), p.KnParams)
 
-	args := []string{"bind"}
+	args := []string{"create"}
 	args = append(args, options...)
-	bindCmd.SetArgs(args)
-	err := bindCmd.Execute()
+	command.SetArgs(args)
+	err := command.Execute()
 
 	return err
 }

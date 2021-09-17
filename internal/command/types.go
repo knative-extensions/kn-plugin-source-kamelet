@@ -18,6 +18,7 @@ package command
 
 import (
 	"context"
+	"io"
 
 	corev1 "k8s.io/api/core/v1"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
@@ -44,14 +45,14 @@ var (
 			Kind:       "Broker",
 			APIVersion: eventingv1.SchemeGroupVersion.String(),
 		},
-		"service": {
+		"ksvc": {
 			Kind:       "Service",
 			APIVersion: servingv1.SchemeGroupVersion.String(),
 		},
 	}
 )
 
-// KnParams for creating commands. Useful for inserting mocks for testing.
+// KameletPluginParams for creating commands. Useful for inserting mocks for testing.
 type KameletPluginParams struct {
 	*commands.KnParams
 	Context          context.Context
@@ -82,4 +83,17 @@ func (params *KameletPluginParams) newKameletClient() (camelkv1alpha1.CamelV1alp
 	}
 
 	return client.CamelV1alpha1(), nil
+}
+
+// CreateBindingOptions holding settings and options on the create binding command
+type CreateBindingOptions struct {
+	Name             string
+	Source           string
+	SourceProperties []string
+	Sink             string
+	Broker           string
+	Channel          string
+	Service          string
+	Force            bool
+	CmdOut           io.Writer
 }
