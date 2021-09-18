@@ -212,8 +212,15 @@ func (c *MockKameletBindingsClient) Delete(ctx context.Context, name string, opt
 func (c *MockKameletBindingsClient) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {
 	panic("implement me")
 }
+
+// List records a call for ListKameletBindings with the expected result and error (nil if none)
+func (sr *KameletRecorder) ListBindings(bindings *camelkapis.KameletBindingList, err error) {
+	sr.r.Add("List", nil, []interface{}{bindings, err})
+}
+
 func (c *MockKameletBindingsClient) List(ctx context.Context, opts v1.ListOptions) (*camelkapis.KameletBindingList, error) {
-	panic("implement me")
+	call := c.recorder.r.VerifyCall("List")
+	return call.Result[0].(*camelkapis.KameletBindingList), mock.ErrorOrNil(call.Result[1])
 }
 
 // GetKameletBinding records a call for Get with the expected result and error (nil if none)
