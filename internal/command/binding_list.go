@@ -32,10 +32,10 @@ import (
 
 var bindingListExample = `
   # List Kamelet bindings.
-  kn-source-kamelet binding list
+  kn source kamelet binding list
 
   # List available Kamelet bindings in YAML output format
-  kn-source-kamelet binding list -o yaml`
+  kn source kamelet binding list -o yaml`
 
 // newBindingCreateCommand implements 'kn-source-kamelet binding list' command
 func newBindingListCommand(p *KameletPluginParams) *cobra.Command {
@@ -65,6 +65,7 @@ func newBindingListCommand(p *KameletPluginParams) *cobra.Command {
 				fmt.Fprintf(cmd.OutOrStdout(), "No resources found.\n")
 				return nil
 			}
+			updateKameletBindingListGvk(bindingList)
 
 			// empty namespace indicates all-namespaces flag is specified
 			if namespace == "" {

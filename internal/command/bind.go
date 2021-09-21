@@ -26,10 +26,10 @@ import (
 
 var bindExample = `
   # Bind Kamelets to a Knative sink
-  kn-source-kamelet bind SOURCE
+  kn source kamelet bind SOURCE
 
   # Add a binding properties
-  kn-source-kamelet bind SOURCE --sink|broker|channel|service=<name> --property=<key>=<value>`
+  kn source kamelet bind SOURCE --sink|broker|channel|service=<name> --property=<key>=<value>`
 
 // NewBindCommand implements 'kn-source-kamelet bind' command
 func NewBindCommand(p *KameletPluginParams) *cobra.Command {

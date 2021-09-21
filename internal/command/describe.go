@@ -37,10 +37,10 @@ import (
 
 var describeExample = `
   # Describe given Kamelets
-  kn-source-kamelet describe NAME
+  kn source kamelet describe NAME
 
   # Describe given Kamelets in YAML output format
-  kn-source-kamelet describe NAME -o yaml`
+  kn source kamelet describe NAME -o yaml`
 
 // NewDescribeCommand implements 'kn-source-kamelet describe' command
 func NewDescribeCommand(p *KameletPluginParams) *cobra.Command {
@@ -52,7 +52,7 @@ func NewDescribeCommand(p *KameletPluginParams) *cobra.Command {
 		Example: describeExample,
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			if len(args) != 1 {
-				return errors.New("'kn-source-kamelet describe' requires the Kamelet name given as single argument")
+				return errors.New("'kn source kamelet describe' requires the Kamelet name given as single argument")
 			}
 			name := args[0]
 
@@ -70,11 +70,12 @@ func NewDescribeCommand(p *KameletPluginParams) *cobra.Command {
 			if err != nil {
 				return knerrors.GetError(err)
 			}
+			updateKameletGvk(kamelet)
 
 			out := cmd.OutOrStdout()
 
 			if !isEventSourceType(kamelet) {
-				return fmt.Errorf("Kamelet %s is not an event source", name)
+				return fmt.Errorf("kamelet %s is not an event source", name)
 			}
 
 			if printFlags.OutputFlagSpecified() {
