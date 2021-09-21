@@ -31,8 +31,8 @@ import (
 )
 
 const (
-	KameletTypeLabel     = "camel.apache.org/kamelet.type"
-	KameletProviderLabel = "camel.apache.org/kamelet.provider"
+	KameletTypeLabel          = "camel.apache.org/kamelet.type"
+	KameletProviderAnnotation = "camel.apache.org/provider"
 )
 
 var (

@@ -41,8 +41,10 @@ func createKameletInNamespace(kameletName string, namespace string) *camelkv1alp
 			Name:              kameletName,
 			CreationTimestamp: v1.Now(),
 			Labels: map[string]string{
-				KameletTypeLabel:     "source",
-				KameletProviderLabel: "Community",
+				KameletTypeLabel: "source",
+			},
+			Annotations: map[string]string{
+				KameletProviderAnnotation: "Community",
 			},
 			SelfLink: fmt.Sprintf("/apis/camel.apache.org/v1alpha1/namespaces/default/kamelets/%s", kameletName),
 		},
