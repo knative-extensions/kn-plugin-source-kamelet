@@ -53,7 +53,7 @@ func updateKameletListGvk(list *v1alpha1.KameletList) {
 		log.Fatalf("Internal error: %v", err)
 	}
 
-	for idx, _ := range list.Items {
+	for idx := range list.Items {
 		updateKameletGvk(&list.Items[idx])
 	}
 }
@@ -65,7 +65,7 @@ func updateKameletGvk(kamelet *v1alpha1.Kamelet) {
 func updateKameletBindingListGvk(list *v1alpha1.KameletBindingList) {
 	_ = util.UpdateGroupVersionKindWithScheme(list, v1alpha1.SchemeGroupVersion, scheme.Scheme)
 
-	for i, _:= range list.Items {
+	for i := range list.Items {
 		updateKameletBindingGvk(&list.Items[i])
 	}
 }
