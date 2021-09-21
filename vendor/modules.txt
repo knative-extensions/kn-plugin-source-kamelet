@@ -719,7 +719,7 @@ knative.dev/pkg/signals
 knative.dev/pkg/system
 knative.dev/pkg/tracker
 knative.dev/pkg/unstructured
-# knative.dev/serving v0.25.1-0.20210920130135-1c335d7ce21c
+# knative.dev/serving v0.25.1-0.20210920201536-4a26f1daa58a
 ## explicit
 knative.dev/serving/pkg/apis/autoscaling
 knative.dev/serving/pkg/apis/autoscaling/v1alpha1
