@@ -33,7 +33,11 @@ func isEventSourceType(kamelet *v1alpha1.Kamelet) bool {
 }
 
 func extractKameletProvider(kamelet *v1alpha1.Kamelet) string {
-	return kamelet.Labels[KameletProviderLabel]
+	return kamelet.Annotations[KameletProviderAnnotation]
+}
+
+func extractKameletSupportLevel(kamelet *v1alpha1.Kamelet) string {
+	return kamelet.Annotations[KameletSupportLevelAnnotation]
 }
 
 func isDisallowedStartEndChar(rune rune) bool {

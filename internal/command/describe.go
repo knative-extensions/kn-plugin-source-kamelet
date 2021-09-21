@@ -128,6 +128,7 @@ func writeKamelet(dw printers.PrefixWriter, kamelet *v1alpha1.Kamelet, printDeta
 	}
 
 	dw.WriteAttribute("Provider", extractKameletProvider(kamelet))
+	dw.WriteAttribute("Support Level", extractKameletSupportLevel(kamelet))
 	dw.WriteAttribute("Phase", string(kamelet.Status.Phase))
 
 	dw.WriteLine()
