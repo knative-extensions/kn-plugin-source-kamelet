@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Copyright 2020 The Knative Authors
 #
@@ -98,6 +98,9 @@ codegen() {
   # Format source code and cleanup imports
   source_format
 
+  # Lint source code
+  (( ! IS_PROW )) && source_lint
+
   # Check for license headers
   check_license
 }
@@ -109,20 +112,15 @@ go_fmt() {
 
 source_format() {
   set +e
-  which goimports >/dev/null 2>&1
-  if [ $? -ne 0 ]; then
-     echo "✋ No 'goimports' found. Please use"
-     echo "✋   go install golang.org/x/tools/cmd/goimports"
-     echo "✋ to enable import cleanup. Import cleanup skipped."
-
-     # Run go fmt instead
-     go_fmt
-  else
-     echo "🧽 ${X}Format"
-     goimports -w $(echo $SOURCE_DIRS)
-     find $(echo $SOURCE_DIRS) -name "*.go" -print0 | xargs -0 gofmt -s -w
-  fi
+  run_go_tool golang.org/x/tools/cmd/goimports goimports -w $(echo $SOURCE_DIRS)
+  find $(echo $SOURCE_DIRS) -name "*.go" -print0 | xargs -0 gofmt -s -w
   set -e
+}
+
+source_lint() {
+  echo "🔍 Lint"
+  run_go_tool github.com/golangci/golangci-lint/cmd/golangci-lint golangci-lint run  || \
+  { echo "--- FAIL: golangci-lint failed please fix the reported errors"; return 1; }
 }
 
 go_build() {
@@ -264,7 +262,7 @@ cross_build() {
   echo "   🍏 ${PLUGIN}-darwin-amd64"
   GOOS=darwin GOARCH=amd64 go build -ldflags "${ld_flags}" -o ./${PLUGIN}-darwin-amd64 "./$MAIN_SOURCE_DIR/..." || failed=1
   echo "   🍎 ${PLUGIN}-arm64"
-  GOOS=darwin GOARCH=arm64 go build -mod=vendor -ldflags "${ld_flags}" -o ./kn-darwin-arm64 ./cmd/... || failed=1
+  GOOS=darwin GOARCH=arm64 go build -mod=vendor -ldflags "${ld_flags}" -o ./${PLUGIN}-darwin-arm64 ./cmd/... || failed=1
   echo "   🎠 ${PLUGIN}-windows-amd64.exe"
   GOOS=windows GOARCH=amd64 go build -ldflags "${ld_flags}" -o ./${PLUGIN}-windows-amd64.exe "./$MAIN_SOURCE_DIR/..." || failed=1
   echo "   Z  ${PLUGIN}-linux-s390x"
@@ -337,6 +335,9 @@ fi
 
 # Global variables
 source $(basedir)/hack/global_vars.sh
+
+# Shared funcs from hack repo
+source $(basedir)/vendor/knative.dev/hack/library.sh
 
 # Shared funcs with CI
 source $(basedir)/hack/build-flags.sh

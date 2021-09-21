@@ -19,7 +19,7 @@
 PLUGIN="kn-source-kamelet"
 
 # Directories containing go code which needs to be formatted
-SOURCE_DIRS="cmd pkg"
+SOURCE_DIRS="cmd pkg internal"
 
 # Directory which should be compiled
 MAIN_SOURCE_DIR="cmd"

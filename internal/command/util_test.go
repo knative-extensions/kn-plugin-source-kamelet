@@ -17,10 +17,11 @@
 package command
 
 import (
+	"testing"
+
 	"github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	"github.com/stretchr/testify/assert"
 	"k8s.io/apimachinery/pkg/runtime"
-	"testing"
 )
 
 func TestUpdateKameletGvk(t *testing.T) {
@@ -32,8 +33,8 @@ func TestUpdateKameletGvk(t *testing.T) {
 
 func TestUpdateKameletListGvk(t *testing.T) {
 	kl := v1alpha1.KameletList{}
-	kl.Items = []v1alpha1.Kamelet {
-		v1alpha1.Kamelet{},
+	kl.Items = []v1alpha1.Kamelet{
+		{},
 	}
 	assert.True(t, kl.GroupVersionKind().Empty())
 	assert.True(t, kl.Items[0].GroupVersionKind().Empty())
@@ -41,7 +42,6 @@ func TestUpdateKameletListGvk(t *testing.T) {
 	verifyGvk(t, "KameletList", &kl)
 	verifyGvk(t, "Kamelet", &kl.Items[0])
 }
-
 
 func TestUpdateKameletBindingGvk(t *testing.T) {
 	kb := v1alpha1.KameletBinding{}
@@ -52,8 +52,8 @@ func TestUpdateKameletBindingGvk(t *testing.T) {
 
 func TestUpdateKameletBindingListGvk(t *testing.T) {
 	kl := v1alpha1.KameletBindingList{}
-	kl.Items = []v1alpha1.KameletBinding {
-		v1alpha1.KameletBinding{},
+	kl.Items = []v1alpha1.KameletBinding{
+		{},
 	}
 	assert.True(t, kl.GroupVersionKind().Empty())
 	assert.True(t, kl.Items[0].GroupVersionKind().Empty())
@@ -66,4 +66,3 @@ func verifyGvk(t *testing.T, kind string, o runtime.Object) {
 	assert.Equal(t, v1alpha1.SchemeGroupVersion, o.GetObjectKind().GroupVersionKind().GroupVersion())
 	assert.Equal(t, kind, o.GetObjectKind().GroupVersionKind().Kind)
 }
-
