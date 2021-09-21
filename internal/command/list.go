@@ -18,7 +18,6 @@ package command
 
 import (
 	"fmt"
-
 	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -33,10 +32,10 @@ import (
 
 var listExample = `
   # List available Kamelets
-  kn-source-kamelet list
+  kn source kamelet list
 
   # List available Kamelets in YAML output format
-  kn-source-kamelet list -o yaml`
+  kn source kamelet list -o yaml`
 
 // NewListCommand implements 'kn-source-kamelet list' command
 func NewListCommand(p *KameletPluginParams) *cobra.Command {
@@ -66,10 +65,14 @@ func NewListCommand(p *KameletPluginParams) *cobra.Command {
 			if err != nil {
 				return err
 			}
+
 			if len(kameletList.Items) == 0 {
 				fmt.Fprintf(cmd.OutOrStdout(), "No resources found.\n")
 				return nil
 			}
+
+			// Set GVKs for printing package
+			updateKameletListGvk(kameletList)
 
 			// empty namespace indicates all-namespaces flag is specified
 			if namespace == "" {

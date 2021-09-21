@@ -45,7 +45,7 @@ func TestDescribeErrorCase(t *testing.T) {
 	recorder := mockClient.Recorder()
 
 	_, err := runDescribeCmd(mockClient)
-	assert.Error(t, err, "'kn-source-kamelet describe' requires the Kamelet name given as single argument")
+	assert.Error(t, err, "'kn source kamelet describe' requires the Kamelet name given as single argument")
 	recorder.Validate()
 }
 
@@ -72,7 +72,7 @@ func TestDescribeErrorCaseNoEventSource(t *testing.T) {
 	recorder.Get(kamelet, nil)
 
 	_, err := runDescribeCmd(mockClient, "k1")
-	assert.Error(t, err, "Kamelet k1 is not an event source")
+	assert.Error(t, err, "kamelet k1 is not an event source")
 	recorder.Validate()
 }
 

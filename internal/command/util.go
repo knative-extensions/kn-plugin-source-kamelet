@@ -17,6 +17,9 @@
 package command
 
 import (
+	"github.com/apache/camel-k/pkg/client/camel/clientset/versioned/scheme"
+	"knative.dev/client/pkg/util"
+	"log"
 	"regexp"
 	"unicode"
 
@@ -38,4 +41,31 @@ func extractKameletProvider(kamelet *v1alpha1.Kamelet) string {
 
 func isDisallowedStartEndChar(rune rune) bool {
 	return !unicode.IsLetter(rune) && !unicode.IsNumber(rune)
+}
+
+func updateKameletListGvk(list *v1alpha1.KameletList) {
+	err := util.UpdateGroupVersionKindWithScheme(list, v1alpha1.SchemeGroupVersion, scheme.Scheme)
+	if err != nil {
+		log.Fatalf("Internal error: %v", err)
+	}
+
+	for idx, _ := range list.Items {
+		updateKameletGvk(&list.Items[idx])
+	}
+}
+
+func updateKameletGvk(kamelet *v1alpha1.Kamelet) {
+	_ = util.UpdateGroupVersionKindWithScheme(kamelet, v1alpha1.SchemeGroupVersion, scheme.Scheme)
+}
+
+func updateKameletBindingListGvk(list *v1alpha1.KameletBindingList) {
+	_ = util.UpdateGroupVersionKindWithScheme(list, v1alpha1.SchemeGroupVersion, scheme.Scheme)
+
+	for i, _:= range list.Items {
+		updateKameletBindingGvk(&list.Items[i])
+	}
+}
+
+func updateKameletBindingGvk(kb *v1alpha1.KameletBinding) {
+	_ = util.UpdateGroupVersionKindWithScheme(kb, v1alpha1.SchemeGroupVersion, scheme.Scheme)
 }

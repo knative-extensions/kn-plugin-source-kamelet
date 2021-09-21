@@ -25,7 +25,7 @@ import (
 func NewSourceKameletCommand() *cobra.Command {
 
 	var rootCmd = &cobra.Command{
-		Use:   "kn-source-kamelet",
+		Use:   "kn source kamelet",
 		Short: "Knative eventing Kamelet source plugin",
 		Long:  `Plugin manages Kamelets and KameletBindings as Knative eventing sources.`,
 	}
