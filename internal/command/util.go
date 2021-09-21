@@ -36,6 +36,10 @@ func extractKameletProvider(kamelet *v1alpha1.Kamelet) string {
 	return kamelet.Annotations[KameletProviderAnnotation]
 }
 
+func extractKameletSupportLevel(kamelet *v1alpha1.Kamelet) string {
+	return kamelet.Annotations[KameletSupportLevelAnnotation]
+}
+
 func isDisallowedStartEndChar(rune rune) bool {
 	return !unicode.IsLetter(rune) && !unicode.IsNumber(rune)
 }
