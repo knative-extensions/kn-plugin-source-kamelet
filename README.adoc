@@ -4,7 +4,7 @@
 
 == Description
 
-With this plugin, you can list available Kamelets and bindings on your cluster.
+With this plugin, you can list available [Kamelets](https://github.com/apache/camel-kamelets) and bindings on your cluster.
 Kamelets can act as Knative eventing sources where each binding connects a Kamelet source to a Knative sink (broker, channel, service).
 
 == Usage
@@ -19,9 +19,9 @@ Available Commands:
   bind          Create Kamelet bindings and bind source to Knative broker, channel or service.
   binding       Configure and manage a Kamelet binding.
   completion    generate the autocompletion script for the specified shell
-  describe-type Show details of given Kamelet source type
+  describe      Show details of given Kamelet source type
   help          Help about any command
-  list-types    List available Kamelet source types
+  list          List available Kamelet source types
   version       Prints the plugin version
 
 Flags:
@@ -32,29 +32,29 @@ Use "kn-source-kamelet [command] --help" for more information about a command.
 
 == Commands
 
-=== `list-types`
+=== `list`
 
 ----
 List available Kamelet source types
 
 Usage:
-  kn-source-kamelet list-types [flags]
+  kn-source-kamelet list [flags]
 
 Aliases:
-  list-types, lst
+  list, ls
 
 Examples:
 
   # List available Kamelets
-  kn-source-kamelet list-types
+  kn-source-kamelet list
 
   # List available Kamelets in YAML output format
-  kn-source-kamelet list-types -o yaml
+  kn-source-kamelet list -o yaml
 
 Flags:
   -A, --all-namespaces                If present, list the requested object(s) across all namespaces. Namespace in current context is ignored even if specified with --namespace.
       --allow-missing-template-keys   If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)
-  -h, --help                          help for list-types
+  -h, --help                          help for list
   -n, --namespace string              Specify the namespace to operate in.
       --no-headers                    When using the default output format, don't print headers (default: print headers).
   -o, --output string                 Output format. One of: json|yaml|name|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-as-json|jsonpath-file.
@@ -62,27 +62,27 @@ Flags:
       --template string               Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
 ----
 
-=== `describe-type`
+=== `describe`
 
 ----
 Show details of given Kamelet source type
 
 Usage:
-  kn-source-kamelet describe-type [flags]
+  kn-source-kamelet describe [flags]
 
 Aliases:
-  describe-type, dt
+  describe
 
 Examples:
 
   # Describe given Kamelets
-  kn-source-kamelet describe-type NAME
+  kn-source-kamelet describe NAME
 
   # Describe given Kamelets in YAML output format
-  kn-source-kamelet describe-type NAME -o yaml
+  kn-source-kamelet describe NAME -o yaml
 
 Flags:
-  -h, --help                          help for describe-type
+  -h, --help                          help for describe
   -n, --namespace string              Specify the namespace to operate in.
   -o, --output string                 Output format. One of: json|yaml|name|url.
   -v, --verbose                       More output.
@@ -103,6 +103,7 @@ Examples:
 
 Available Commands:
   create      Create Kamelet bindings and bind source to Knative broker, channel or service.
+  list        List Kamelet bindings.
 
 Flags:
   -h, --help   help for binding
@@ -136,6 +137,36 @@ Flags:
       --service string                Uses a Knative service as binding sink.
   -s  --sink string                   Sink expression to define the binding sink.
       --property stringArray   Add a source property in the form of "<key>=<value>"
+----
+
+==== `binding list`
+
+----
+List Kamelet bindings.
+
+Usage:
+  kn-source-kamelet binding list [flags]
+
+Aliases:
+  list, ls
+
+Examples:
+
+  # List Kamelet bindings.
+  kn source kamelet binding list
+
+  # List available Kamelet bindings in YAML output format
+  kn source kamelet binding list -o yaml
+
+Flags:
+  -A, --all-namespaces                If present, list the requested object(s) across all namespaces. Namespace in current context is ignored even if specified with --namespace.
+      --allow-missing-template-keys   If true, ignore any errors in templates when a field or map key is missing in the template. Only applies to golang and jsonpath output formats. (default true)
+  -h, --help                          help for list
+  -n, --namespace string              Specify the namespace to operate in.
+      --no-headers                    When using the default output format, don't print headers (default: print headers).
+  -o, --output string                 Output format. One of: json|yaml|name|go-template|go-template-file|template|templatefile|jsonpath|jsonpath-as-json|jsonpath-file.
+      --show-managed-fields           If true, keep the managedFields when printing objects in JSON or YAML format.
+      --template string               Template string or path to template file to use when -o=go-template, -o=go-template-file. The template format is golang templates [http://golang.org/pkg/text/template/#pkg-overview].
 ----
 
 === `bind`
