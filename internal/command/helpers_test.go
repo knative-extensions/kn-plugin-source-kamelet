@@ -102,7 +102,8 @@ func createKameletBindingInNamespace(bindingName string, kameletName string,
 				},
 			},
 			Sink: camelkv1alpha1.Endpoint{
-				Ref: sink,
+				Properties: &camelkv1alpha1.EndpointProperties{},
+				Ref:        sink,
 			},
 		},
 	}

@@ -160,6 +160,7 @@ func TestBindToChannel(t *testing.T) {
 				},
 			},
 			Sink: v1alpha1.Endpoint{
+				Properties: &v1alpha1.EndpointProperties{},
 				Ref: &corev1.ObjectReference{
 					Kind:       "Channel",
 					APIVersion: messagingv1.SchemeGroupVersion.String(),
@@ -201,6 +202,7 @@ func TestBindToBroker(t *testing.T) {
 				},
 			},
 			Sink: v1alpha1.Endpoint{
+				Properties: &v1alpha1.EndpointProperties{},
 				Ref: &corev1.ObjectReference{
 					Kind:       "Broker",
 					APIVersion: eventingv1.SchemeGroupVersion.String(),
@@ -242,6 +244,7 @@ func TestBindToService(t *testing.T) {
 				},
 			},
 			Sink: v1alpha1.Endpoint{
+				Properties: &v1alpha1.EndpointProperties{},
 				Ref: &corev1.ObjectReference{
 					Kind:       "Service",
 					APIVersion: servingv1.SchemeGroupVersion.String(),
@@ -283,6 +286,7 @@ func TestBindAutoUpdate(t *testing.T) {
 				},
 			},
 			Sink: v1alpha1.Endpoint{
+				Properties: &v1alpha1.EndpointProperties{},
 				Ref: &corev1.ObjectReference{
 					Kind:       "Channel",
 					APIVersion: messagingv1.SchemeGroupVersion.String(),
@@ -300,6 +304,50 @@ func TestBindAutoUpdate(t *testing.T) {
 	recorder.UpdateKameletBinding(binding, nil)
 
 	err := runBindCmd(mockClient, "k1", "--channel", "test", "--property", "k1_prop=foo")
+	assert.NilError(t, err)
+
+	recorder.Validate()
+}
+
+func TestBindWithCustomCloudEventSettings(t *testing.T) {
+	mockClient := client.NewMockClient(t)
+	recorder := mockClient.Recorder()
+
+	namespace := "current"
+	kamelet := createKameletInNamespace("k4", namespace)
+	recorder.Get(kamelet, nil)
+
+	recorder.CreateKameletBinding(&v1alpha1.KameletBinding{
+		ObjectMeta: v1.ObjectMeta{
+			Namespace: namespace,
+			Name:      "k4-ce-settings-test",
+		},
+		Spec: v1alpha1.KameletBindingSpec{
+			Source: v1alpha1.Endpoint{
+				Properties: &v1alpha1.EndpointProperties{
+					RawMessage: []byte("{\"k4_prop\":\"foo\"}"),
+				},
+				Ref: &corev1.ObjectReference{
+					Kind:       v1alpha1.KameletKind,
+					APIVersion: v1alpha1.SchemeGroupVersion.String(),
+					Namespace:  namespace,
+					Name:       "k4",
+				},
+			},
+			Sink: v1alpha1.Endpoint{
+				Properties: &v1alpha1.EndpointProperties{
+					RawMessage: []byte("{\"ce.override.subject\":\"custom\",\"cloudEventsSpecVersion\":\"1.0.1\",\"cloudEventsType\":\"custom-type\"}"),
+				},
+				Ref: &corev1.ObjectReference{
+					Kind:       "Channel",
+					APIVersion: messagingv1.SchemeGroupVersion.String(),
+					Namespace:  namespace,
+					Name:       "test",
+				},
+			},
+		},
+	}, nil)
+	err := runBindCmd(mockClient, "k4", "--channel", "test", "--name", "k4-ce-settings-test", "--property", "k4_prop=foo", "--ce-spec", "1.0.1", "--ce-type", "custom-type", "--ce-override", "subject=custom")
 	assert.NilError(t, err)
 
 	recorder.Validate()

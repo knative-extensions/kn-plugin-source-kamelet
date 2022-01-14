@@ -218,6 +218,30 @@ func TestBindingCreateToService(t *testing.T) {
 	recorder.Validate()
 }
 
+func TestBindingCreateWithCloudEventsSettings(t *testing.T) {
+	mockClient := client.NewMockClient(t)
+	recorder := mockClient.Recorder()
+
+	namespace := "current"
+	kamelet := createKameletInNamespace("k4", namespace)
+	recorder.Get(kamelet, nil)
+
+	binding := createKameletBindingInNamespace("k4-to-channel", "k4", namespace, &corev1.ObjectReference{
+		Kind:       "Channel",
+		APIVersion: messagingv1.SchemeGroupVersion.String(),
+		Namespace:  namespace,
+		Name:       "test",
+	})
+
+	binding.Spec.Sink.Properties.RawMessage = []byte("{\"ce.override.subject\":\"custom\",\"cloudEventsSpecVersion\":\"1.0.1\",\"cloudEventsType\":\"custom-type\"}")
+
+	recorder.CreateKameletBinding(binding, nil)
+	err := runBindingCreateCmd(mockClient, "k4-to-channel", "--kamelet", "k4", "--channel", "test", "--property", "k4_prop=foo", "--ce-spec", "1.0.1", "--ce-type", "custom-type", "--ce-override", "subject=custom")
+	assert.NilError(t, err)
+
+	recorder.Validate()
+}
+
 func runBindingCreateCmd(c *client.MockClient, options ...string) error {
 	p := KameletPluginParams{
 		KnParams: &commands.KnParams{},

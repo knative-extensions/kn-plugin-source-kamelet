@@ -138,7 +138,10 @@ Flags:
   -n, --namespace string              Specify the namespace to operate in.
       --service string                Uses a Knative service as binding sink.
   -s  --sink string                   Sink expression to define the binding sink.
-      --property stringArray   Add a source property in the form of "<key>=<value>"
+      --property stringArray          Add a source property in the form of "<key>=<value>"
+      --ce-override stringArray       Customize cloud events property in the form of "<key>=<value>"
+      --ce-spec string                Customize cloud events spec version provided to the binding sink.
+      --ce-type string                Customize cloud events type provided to the binding sink.
 ----
 
 ==== `binding list`
@@ -199,7 +202,10 @@ Flags:
   -n, --namespace string              Specify the namespace to operate in.
       --service string                Uses a Knative service as binding sink.
   -s  --sink string                   Sink expression to define the binding sink.
-      --property stringArray   Add a source property in the form of "<key>=<value>"
+      --property stringArray          Add a source property in the form of "<key>=<value>"
+      --ce-override stringArray       Customize cloud events property in the form of "<key>=<value>"
+      --ce-spec string                Customize cloud events spec version provided to the binding sink.
+      --ce-type string                Customize cloud events type provided to the binding sink.
 ----
 
 === `version`
