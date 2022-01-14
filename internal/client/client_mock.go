@@ -205,8 +205,15 @@ func (c *MockKameletBindingsClient) UpdateStatus(ctx context.Context, binding *c
 	panic("implement me")
 }
 
+// DeleteKameletBinding records a call for DeleteKameletBinding with the expected name and error (nil if none)
+func (sr *KameletRecorder) DeleteKameletBinding(name string, err error) {
+	sr.r.Add("Delete", nil, []interface{}{name, err})
+}
+
 func (c *MockKameletBindingsClient) Delete(ctx context.Context, name string, opts v1.DeleteOptions) error {
-	panic("implement me")
+	call := c.recorder.r.VerifyCall("Delete")
+	assert.Equal(c.t, call.Result[0], name)
+	return mock.ErrorOrNil(call.Result[1])
 }
 
 func (c *MockKameletBindingsClient) DeleteCollection(ctx context.Context, opts v1.DeleteOptions, listOpts v1.ListOptions) error {

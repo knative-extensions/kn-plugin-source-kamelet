@@ -36,7 +36,7 @@ func TestDescribeSetup(t *testing.T) {
 	}
 
 	describeCmd := NewDescribeCommand(&p)
-	assert.Equal(t, describeCmd.Use, "describe")
+	assert.Equal(t, describeCmd.Use, "describe NAME")
 	assert.Equal(t, describeCmd.Short, "Show details of given Kamelet source type")
 	assert.Assert(t, describeCmd.RunE != nil)
 }

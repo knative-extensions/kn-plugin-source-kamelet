@@ -42,7 +42,7 @@ func TestBindSetup(t *testing.T) {
 	}
 
 	bindCmd := NewBindCommand(&p)
-	assert.Equal(t, bindCmd.Use, "bind")
+	assert.Equal(t, bindCmd.Use, "bind SOURCE")
 	assert.Equal(t, bindCmd.Short, "Create Kamelet bindings and bind source to Knative broker, channel or service.")
 	assert.Assert(t, bindCmd.RunE != nil)
 }

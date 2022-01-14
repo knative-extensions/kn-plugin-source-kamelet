@@ -47,7 +47,7 @@ func NewDescribeCommand(p *KameletPluginParams) *cobra.Command {
 	printFlags := genericclioptions.NewPrintFlags("")
 
 	cmd := &cobra.Command{
-		Use:     "describe",
+		Use:     "describe NAME",
 		Short:   "Show details of given Kamelet source type",
 		Example: describeExample,
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
