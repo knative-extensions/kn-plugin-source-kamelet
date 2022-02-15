@@ -57,7 +57,7 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 	var force bool
 
 	cmd := &cobra.Command{
-		Use:     "create",
+		Use:     "create NAME",
 		Short:   "Create Kamelet bindings and bind source to Knative broker, channel or service.",
 		Example: bindingCreateExample,
 		RunE: func(cmd *cobra.Command, args []string) (err error) {

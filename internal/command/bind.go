@@ -42,7 +42,7 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 	var cloudEventsSpecVersion string
 	var cloudEventsType string
 	cmd := &cobra.Command{
-		Use:     "bind",
+		Use:     "bind SOURCE",
 		Short:   "Create Kamelet bindings and bind source to Knative broker, channel or service.",
 		Example: bindExample,
 		RunE: func(cmd *cobra.Command, args []string) (err error) {

@@ -70,7 +70,7 @@ Flags:
 Show details of given Kamelet source type
 
 Usage:
-  kn-source-kamelet describe [flags]
+  kn-source-kamelet describe NAME [flags]
 
 Aliases:
   describe
@@ -105,6 +105,7 @@ Examples:
 
 Available Commands:
   create      Create Kamelet bindings and bind source to Knative broker, channel or service.
+  delete      Delete Kamelet binding by its name.
   list        List Kamelet bindings.
 
 Flags:
@@ -119,7 +120,7 @@ Use "kn-source-kamelet binding [command] --help" for more information about a co
 Create Kamelet bindings and bind source to Knative broker, channel or service.
 
 Usage:
-  kn-source-kamelet binding create [flags]
+  kn-source-kamelet binding create NAME [flags]
 
 Examples:
 
@@ -142,6 +143,24 @@ Flags:
       --ce-override stringArray       Customize cloud events property in the form of "<key>=<value>"
       --ce-spec string                Customize cloud events spec version provided to the binding sink.
       --ce-type string                Customize cloud events type provided to the binding sink.
+----
+
+==== `binding delete`
+
+----
+Delete Kamelet binding by its name.
+
+Usage:
+  kn-source-kamelet binding delete NAME [flags]
+
+Examples:
+
+  # Delete Kamelet binding by its name.
+  kn-source-kamelet binding delete NAME
+
+Flags:
+  -h, --help                          help for create
+  -n, --namespace string              Specify the namespace to operate in.
 ----
 
 ==== `binding list`
@@ -183,7 +202,7 @@ The shortcut command auto generates a binding name in case no explicit name is g
 Create Kamelet bindings and bind source to Knative broker, channel or service.
 
 Usage:
-  kn-source-kamelet bind [flags]
+  kn-source-kamelet bind SOURCE [flags]
 
 Examples:
 
