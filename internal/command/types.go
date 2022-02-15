@@ -88,13 +88,16 @@ func (params *KameletPluginParams) newKameletClient() (camelkv1alpha1.CamelV1alp
 
 // CreateBindingOptions holding settings and options on the create binding command
 type CreateBindingOptions struct {
-	Name             string
-	Source           string
-	SourceProperties []string
-	Sink             string
-	Broker           string
-	Channel          string
-	Service          string
-	Force            bool
-	CmdOut           io.Writer
+	Name                   string
+	Source                 string
+	SourceProperties       []string
+	CloudEventsOverride    []string
+	CloudEventsSpecVersion string
+	CloudEventsType        string
+	Sink                   string
+	Broker                 string
+	Channel                string
+	Service                string
+	Force                  bool
+	CmdOut                 io.Writer
 }

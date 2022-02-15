@@ -38,6 +38,9 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 	var broker string
 	var channel string
 	var service string
+	var cloudEventsOverride []string
+	var cloudEventsSpecVersion string
+	var cloudEventsType string
 	cmd := &cobra.Command{
 		Use:     "bind",
 		Short:   "Create Kamelet bindings and bind source to Knative broker, channel or service.",
@@ -64,15 +67,18 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 			}
 
 			options := CreateBindingOptions{
-				Name:             name,
-				Source:           source,
-				SourceProperties: properties,
-				Sink:             sink,
-				Broker:           broker,
-				Channel:          channel,
-				Service:          service,
-				Force:            true,
-				CmdOut:           cmd.OutOrStdout(),
+				Name:                   name,
+				Source:                 source,
+				SourceProperties:       properties,
+				Sink:                   sink,
+				CloudEventsOverride:    cloudEventsOverride,
+				CloudEventsSpecVersion: cloudEventsSpecVersion,
+				CloudEventsType:        cloudEventsType,
+				Broker:                 broker,
+				Channel:                channel,
+				Service:                service,
+				Force:                  true,
+				CmdOut:                 cmd.OutOrStdout(),
 			}
 
 			err = createBinding(client, p.Context, namespace, options)
@@ -92,5 +98,8 @@ func NewBindCommand(p *KameletPluginParams) *cobra.Command {
 	flags.StringVar(&channel, "channel", "", "Uses a channel as binding sink.")
 	flags.StringVar(&service, "service", "", "Uses a Knative service as binding sink.")
 	flags.StringArrayVar(&properties, "property", nil, `Add a source property in the form of "<key>=<value>"`)
+	flags.StringVar(&cloudEventsSpecVersion, "ce-spec", "", "Customize cloud events spec version provided to the binding sink.")
+	flags.StringVar(&cloudEventsType, "ce-type", "", "Customize cloud events type provided to the binding sink.")
+	flags.StringArrayVar(&cloudEventsOverride, "ce-override", nil, `Customize cloud events property in the form of "<key>=<value>"`)
 	return cmd
 }

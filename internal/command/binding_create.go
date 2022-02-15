@@ -51,7 +51,11 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 	var broker string
 	var channel string
 	var service string
+	var cloudEventsOverride []string
+	var cloudEventsSpecVersion string
+	var cloudEventsType string
 	var force bool
+
 	cmd := &cobra.Command{
 		Use:     "create",
 		Short:   "Create Kamelet bindings and bind source to Knative broker, channel or service.",
@@ -73,15 +77,18 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 			}
 
 			options := CreateBindingOptions{
-				Name:             name,
-				Source:           source,
-				SourceProperties: properties,
-				Sink:             sink,
-				Broker:           broker,
-				Channel:          channel,
-				Service:          service,
-				Force:            force,
-				CmdOut:           cmd.OutOrStdout(),
+				Name:                   name,
+				Source:                 source,
+				SourceProperties:       properties,
+				Sink:                   sink,
+				CloudEventsOverride:    cloudEventsOverride,
+				CloudEventsSpecVersion: cloudEventsSpecVersion,
+				CloudEventsType:        cloudEventsType,
+				Broker:                 broker,
+				Channel:                channel,
+				Service:                service,
+				Force:                  force,
+				CmdOut:                 cmd.OutOrStdout(),
 			}
 
 			err = createBinding(client, p.Context, namespace, options)
@@ -102,6 +109,9 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 	flags.StringVar(&service, "service", "", "Uses a Knative service as binding sink.")
 	flags.BoolVar(&force, "force", false, "Apply the changes even if the binding already exists.")
 	flags.StringArrayVar(&properties, "property", nil, `Add a source property in the form of "<key>=<value>"`)
+	flags.StringVar(&cloudEventsSpecVersion, "ce-spec", "", "Customize cloud events spec version provided to the binding sink.")
+	flags.StringVar(&cloudEventsType, "ce-type", "", "Customize cloud events type provided to the binding sink.")
+	flags.StringArrayVar(&cloudEventsOverride, "ce-override", nil, `Customize cloud events property in the form of "<key>=<value>"`)
 	return cmd
 }
 
@@ -119,8 +129,12 @@ func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Con
 	if err != nil {
 		return knerrors.GetError(err)
 	}
+	sourceEndpointProps, err := asEndpointProperties(sourceProps)
+	if err != nil {
+		return knerrors.GetError(err)
+	}
 	sourceEndpoint := v1alpha1.Endpoint{
-		Properties: &sourceProps,
+		Properties: &sourceEndpointProps,
 		Ref: &corev1.ObjectReference{
 			Kind:       v1alpha1.KameletKind,
 			APIVersion: v1alpha1.SchemeGroupVersion.String(),
@@ -154,8 +168,17 @@ func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Con
 		sinkRef.Namespace = namespace
 	}
 
+	sinkProps, err := getSinkProperties(options)
+	if err != nil {
+		return knerrors.GetError(err)
+	}
+	sinkEndpointProps, err := asEndpointProperties(sinkProps)
+	if err != nil {
+		return knerrors.GetError(err)
+	}
 	sinkEndpoint := v1alpha1.Endpoint{
-		Ref: &sinkRef,
+		Properties: &sinkEndpointProps,
+		Ref:        &sinkRef,
 	}
 
 	name := nameFor(options.Name, options.Source, sinkRef)
@@ -284,16 +307,16 @@ func verifyProperties(kamelet *v1alpha1.Kamelet, endpoint v1alpha1.Endpoint) err
 	return nil
 }
 
-func parseProperties(properties []string) (v1alpha1.EndpointProperties, error) {
+func parseProperties(properties []string) (map[string]string, error) {
 	props := make(map[string]string)
 	for _, p := range properties {
 		key, value, err := parseProperty(p)
 		if err != nil {
-			continue
+			return nil, err
 		}
 		props[key] = value
 	}
-	return asEndpointProperties(props)
+	return props, nil
 }
 
 func asEndpointProperties(props map[string]string) (v1alpha1.EndpointProperties, error) {
@@ -315,4 +338,27 @@ func parseProperty(prop string) (string, string, error) {
 		return "", "", fmt.Errorf(`property %q does not follow format "<key>=<value>"`, prop)
 	}
 	return parts[0], parts[1], nil
+}
+
+func getSinkProperties(options CreateBindingOptions) (map[string]string, error) {
+	props := make(map[string]string)
+
+	if options.CloudEventsSpecVersion != "" {
+		props["cloudEventsSpecVersion"] = options.CloudEventsSpecVersion
+	}
+
+	if options.CloudEventsType != "" {
+		props["cloudEventsType"] = options.CloudEventsType
+	}
+
+	overrideProps, err := parseProperties(options.CloudEventsOverride)
+	if err != nil {
+		return props, knerrors.GetError(err)
+	}
+
+	for key, prop := range overrideProps {
+		props["ce.override."+key] = prop
+	}
+
+	return props, nil
 }
