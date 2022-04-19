@@ -5,6 +5,8 @@ go 1.17
 require (
 	github.com/apache/camel-k/pkg/apis/camel v1.3.1
 	github.com/apache/camel-k/pkg/client/camel v1.3.1
+	github.com/hashicorp/golang-lru v0.5.4
+	github.com/hashicorp/hcl v1.0.0
 	github.com/spf13/cobra v1.3.0
 	github.com/stretchr/testify v1.7.0
 	gotest.tools/v3 v3.1.0
@@ -12,11 +14,11 @@ require (
 	k8s.io/apimachinery v0.23.5
 	k8s.io/cli-runtime v0.23.4
 	k8s.io/client-go v0.23.5
-	knative.dev/client v0.30.2-0.20220414141510-76f17f686f4a
-	knative.dev/eventing v0.30.1-0.20220415141711-ff55a456c3f9
+	knative.dev/client v0.31.0
+	knative.dev/eventing v0.31.0
 	knative.dev/hack v0.0.0-20220411131823-6ffd8417de7c
 	knative.dev/pkg v0.0.0-20220412134708-e325df66cb51
-	knative.dev/serving v0.30.1-0.20220416140111-2e5ca679a71e
+	knative.dev/serving v0.31.0
 )
 
 require (
@@ -54,8 +56,6 @@ require (
 	github.com/googleapis/gnostic v0.5.5 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
-	github.com/hashicorp/golang-lru v0.5.4 // indirect
-	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
@@ -92,7 +92,6 @@ require (
 	go.opencensus.io v0.23.0 // indirect
 	go.starlark.net v0.0.0-20200306205701-8dd3e2ee1dd5 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
-	go.uber.org/goleak v1.1.12 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.19.1 // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
