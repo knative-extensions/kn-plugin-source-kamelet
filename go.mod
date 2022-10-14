@@ -7,18 +7,18 @@ require (
 	github.com/apache/camel-k/pkg/client/camel v1.3.1
 	github.com/hashicorp/golang-lru v0.5.4
 	github.com/hashicorp/hcl v1.0.0
-	github.com/spf13/cobra v1.5.0
+	github.com/spf13/cobra v1.6.0
 	github.com/stretchr/testify v1.8.0
 	gotest.tools/v3 v3.3.0
 	k8s.io/api v0.25.2
 	k8s.io/apimachinery v0.25.2
-	k8s.io/cli-runtime v0.24.4
+	k8s.io/cli-runtime v0.25.2
 	k8s.io/client-go v0.25.2
-	knative.dev/client v0.34.1-0.20221006015032-97690ef46cad
-	knative.dev/eventing v0.34.1-0.20221010083935-56e9ee13b301
+	knative.dev/client v0.34.1-0.20221013140753-be74c58ae0e5
+	knative.dev/eventing v0.34.1-0.20221013172353-24adf198c60c
 	knative.dev/hack v0.0.0-20221010154335-3fdc50b9c24a
-	knative.dev/pkg v0.0.0-20221010143036-21d3b47e2efe
-	knative.dev/serving v0.34.1-0.20221010213350-636e12161662
+	knative.dev/pkg v0.0.0-20221011175852-714b7630a836
+	knative.dev/serving v0.34.1-0.20221013210953-2220d0c22b45
 )
 
 require (
@@ -119,8 +119,8 @@ require (
 	k8s.io/utils v0.0.0-20220728103510-ee6ede2d64ed // indirect
 	knative.dev/networking v0.0.0-20221007151732-fcbfa31ac035 // indirect
 	sigs.k8s.io/json v0.0.0-20220713155537-f223a00ba0e2 // indirect
-	sigs.k8s.io/kustomize/api v0.11.4 // indirect
-	sigs.k8s.io/kustomize/kyaml v0.13.6 // indirect
+	sigs.k8s.io/kustomize/api v0.12.1 // indirect
+	sigs.k8s.io/kustomize/kyaml v0.13.9 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.2.3 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
