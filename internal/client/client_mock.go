@@ -30,7 +30,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/watch"
 	"k8s.io/client-go/rest"
-	"knative.dev/client/pkg/util/mock"
+	"knative.dev/client-pkg/pkg/util/mock"
 )
 
 // MockClient is a combine of test object and recorder

@@ -22,13 +22,13 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"knative.dev/client/pkg/kn/commands"
+	"knative.dev/client-pkg/pkg/kn/commands"
 
 	camelkv1alpha1 "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	"github.com/spf13/cobra"
 	metav1beta1 "k8s.io/apimachinery/pkg/apis/meta/v1beta1"
-	"knative.dev/client/pkg/kn/commands/flags"
-	hprinters "knative.dev/client/pkg/printers"
+	"knative.dev/client-pkg/pkg/kn/commands/flags"
+	hprinters "knative.dev/client-pkg/pkg/printers"
 )
 
 var listExample = `

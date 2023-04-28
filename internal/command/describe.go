@@ -26,11 +26,11 @@ import (
 	"github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
-	"knative.dev/client/pkg/printers"
+	"knative.dev/client-pkg/pkg/printers"
 	"knative.dev/pkg/apis"
 
-	knerrors "knative.dev/client/pkg/errors"
-	"knative.dev/client/pkg/kn/commands"
+	knerrors "knative.dev/client-pkg/pkg/errors"
+	"knative.dev/client-pkg/pkg/kn/commands"
 
 	"github.com/spf13/cobra"
 )
