@@ -20,8 +20,8 @@ import (
 	"errors"
 
 	"github.com/spf13/cobra"
-	knerrors "knative.dev/client/pkg/errors"
-	"knative.dev/client/pkg/kn/commands"
+	knerrors "knative.dev/client-pkg/pkg/errors"
+	"knative.dev/client-pkg/pkg/kn/commands"
 )
 
 var bindExample = `

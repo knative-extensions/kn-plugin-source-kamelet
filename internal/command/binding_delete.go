@@ -22,13 +22,13 @@ import (
 	"fmt"
 	"io"
 
-	knerrors "knative.dev/client/pkg/errors"
+	knerrors "knative.dev/client-pkg/pkg/errors"
 
 	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
 
 	"github.com/spf13/cobra"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"knative.dev/client/pkg/kn/commands"
+	"knative.dev/client-pkg/pkg/kn/commands"
 )
 
 var bindingDeleteExample = `

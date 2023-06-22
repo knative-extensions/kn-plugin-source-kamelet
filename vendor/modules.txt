@@ -794,29 +794,29 @@ k8s.io/utils/net
 k8s.io/utils/pointer
 k8s.io/utils/strings/slices
 k8s.io/utils/trace
-# knative.dev/client v0.37.0
+# knative.dev/client-pkg v0.0.0-20230425201444-4f052f9ef2f2
 ## explicit; go 1.18
-knative.dev/client/pkg/config
-knative.dev/client/pkg/dynamic
-knative.dev/client/pkg/dynamic/fake
-knative.dev/client/pkg/errors
-knative.dev/client/pkg/eventing/v1
-knative.dev/client/pkg/eventing/v1beta1
-knative.dev/client/pkg/kn/commands
-knative.dev/client/pkg/kn/commands/flags
-knative.dev/client/pkg/kn/config
-knative.dev/client/pkg/kn/flags
-knative.dev/client/pkg/kn/plugin
-knative.dev/client/pkg/messaging/v1
-knative.dev/client/pkg/printers
-knative.dev/client/pkg/serving
-knative.dev/client/pkg/serving/v1
-knative.dev/client/pkg/serving/v1alpha1
-knative.dev/client/pkg/sources/v1
-knative.dev/client/pkg/sources/v1beta2
-knative.dev/client/pkg/util
-knative.dev/client/pkg/util/mock
-knative.dev/client/pkg/wait
+knative.dev/client-pkg/pkg/config
+knative.dev/client-pkg/pkg/dynamic
+knative.dev/client-pkg/pkg/dynamic/fake
+knative.dev/client-pkg/pkg/errors
+knative.dev/client-pkg/pkg/eventing/v1
+knative.dev/client-pkg/pkg/eventing/v1beta1
+knative.dev/client-pkg/pkg/kn/commands
+knative.dev/client-pkg/pkg/kn/commands/flags
+knative.dev/client-pkg/pkg/kn/config
+knative.dev/client-pkg/pkg/kn/flags
+knative.dev/client-pkg/pkg/kn/plugin
+knative.dev/client-pkg/pkg/messaging/v1
+knative.dev/client-pkg/pkg/printers
+knative.dev/client-pkg/pkg/serving
+knative.dev/client-pkg/pkg/serving/v1
+knative.dev/client-pkg/pkg/serving/v1alpha1
+knative.dev/client-pkg/pkg/sources/v1
+knative.dev/client-pkg/pkg/sources/v1beta2
+knative.dev/client-pkg/pkg/util
+knative.dev/client-pkg/pkg/util/mock
+knative.dev/client-pkg/pkg/wait
 # knative.dev/eventing v0.37.0
 ## explicit; go 1.19
 knative.dev/eventing/pkg/apis/config

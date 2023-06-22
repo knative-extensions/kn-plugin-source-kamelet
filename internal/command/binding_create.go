@@ -32,8 +32,8 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	knerrors "knative.dev/client/pkg/errors"
-	"knative.dev/client/pkg/kn/commands"
+	knerrors "knative.dev/client-pkg/pkg/errors"
+	"knative.dev/client-pkg/pkg/kn/commands"
 )
 
 var bindingCreateExample = `

@@ -22,7 +22,7 @@ import (
 	"unicode"
 
 	"github.com/apache/camel-k/pkg/client/camel/clientset/versioned/scheme"
-	"knative.dev/client/pkg/util"
+	"knative.dev/client-pkg/pkg/util"
 
 	"github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 )

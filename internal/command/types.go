@@ -27,7 +27,7 @@ import (
 
 	camelk "github.com/apache/camel-k/pkg/client/camel/clientset/versioned"
 	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
-	"knative.dev/client/pkg/kn/commands"
+	"knative.dev/client-pkg/pkg/kn/commands"
 )
 
 const (

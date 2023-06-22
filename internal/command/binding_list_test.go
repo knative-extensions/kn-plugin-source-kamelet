@@ -28,8 +28,8 @@ import (
 
 	camelkapis "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
-	"knative.dev/client/pkg/kn/commands"
-	"knative.dev/client/pkg/util"
+	"knative.dev/client-pkg/pkg/kn/commands"
+	"knative.dev/client-pkg/pkg/util"
 	"knative.dev/kn-plugin-source-kamelet/internal/client"
 
 	"gotest.tools/v3/assert"

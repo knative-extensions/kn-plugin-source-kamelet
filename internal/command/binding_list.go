@@ -25,9 +25,9 @@ import (
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	metav1beta1 "k8s.io/apimachinery/pkg/apis/meta/v1beta1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"knative.dev/client/pkg/kn/commands"
-	"knative.dev/client/pkg/kn/commands/flags"
-	hprinters "knative.dev/client/pkg/printers"
+	"knative.dev/client-pkg/pkg/kn/commands"
+	"knative.dev/client-pkg/pkg/kn/commands/flags"
+	hprinters "knative.dev/client-pkg/pkg/printers"
 )
 
 var bindingListExample = `
