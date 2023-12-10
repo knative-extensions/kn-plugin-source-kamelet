@@ -22,9 +22,8 @@ import (
 
 	"gotest.tools/v3/assert"
 
-	camelkapis "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
-	camelkv1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1"
-	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
+	camelkapis "github.com/apache/camel-k/v2/pkg/apis/camel/v1"
+	camelkv1 "github.com/apache/camel-k/v2/pkg/client/camel/clientset/versioned/typed/camel/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
@@ -84,9 +83,9 @@ func newMockKameletBindingsClient(c *MockClient) *MockKameletBindingsClient {
 }
 
 // Ensure that the interface is implemented
-var _ camelkv1alpha1.CamelV1alpha1Interface = &MockClient{}
-var _ camelkv1alpha1.KameletInterface = &MockKameletClient{}
-var _ camelkv1alpha1.KameletBindingInterface = &MockKameletBindingsClient{}
+var _ camelkv1.CamelV1Interface = &MockClient{}
+var _ camelkv1.KameletInterface = &MockKameletClient{}
+var _ camelkv1.PipeInterface = &MockKameletBindingsClient{}
 
 // KameletRecorder is recorder for eventing objects
 type KameletRecorder struct {
@@ -97,8 +96,8 @@ func (c *MockClient) CamelV1() camelkv1.CamelV1Interface {
 	panic("implement me")
 }
 
-func (c *MockClient) CamelV1alpha1() *camelkv1alpha1.CamelV1alpha1Interface {
-	var i camelkv1alpha1.CamelV1alpha1Interface = c
+func (c *MockClient) CamelV1alpha1() *camelkv1.CamelV1Interface {
+	var i camelkv1.CamelV1Interface = c
 	return &i
 }
 
@@ -114,13 +113,13 @@ func (c *MockClient) GetCurrentNamespace(kubeConfig string) (string, error) {
 	panic("implement me")
 }
 
-func (c *MockClient) Kamelets(namespace string) camelkv1alpha1.KameletInterface {
-	var i camelkv1alpha1.KameletInterface = newMockKameletClient(c)
+func (c *MockClient) Kamelets(namespace string) camelkv1.KameletInterface {
+	var i camelkv1.KameletInterface = newMockKameletClient(c)
 	return i
 }
 
-func (c *MockClient) KameletBindings(namespace string) camelkv1alpha1.KameletBindingInterface {
-	var i camelkv1alpha1.KameletBindingInterface = newMockKameletBindingsClient(c)
+func (c *MockClient) KameletBindings(namespace string) camelkv1.PipeInterface {
+	var i camelkv1.PipeInterface = newMockKameletBindingsClient(c)
 	return i
 }
 
@@ -180,28 +179,28 @@ func (c *MockKameletClient) Patch(ctx context.Context, name string, pt types.Pat
 }
 
 // CreateKameletBinding records a call for CreateKameletBinding with the expected result and error (nil if none)
-func (sr *KameletRecorder) CreateKameletBinding(binding *camelkapis.KameletBinding, err error) {
+func (sr *KameletRecorder) CreateKameletBinding(binding *camelkapis.Pipe, err error) {
 	sr.r.Add("Create", nil, []interface{}{binding, err})
 }
 
 // Create performs a previously recorded action
-func (c *MockKameletBindingsClient) Create(ctx context.Context, binding *camelkapis.KameletBinding, opts v1.CreateOptions) (*camelkapis.KameletBinding, error) {
+func (c *MockKameletBindingsClient) Create(ctx context.Context, binding *camelkapis.Pipe, opts v1.CreateOptions) (*camelkapis.Pipe, error) {
 	call := c.recorder.r.VerifyCall("Create")
-	assert.DeepEqual(c.t, call.Result[0].(*camelkapis.KameletBinding), binding)
-	return call.Result[0].(*camelkapis.KameletBinding), mock.ErrorOrNil(call.Result[1])
+	assert.DeepEqual(c.t, call.Result[0].(*camelkapis.Pipe), binding)
+	return call.Result[0].(*camelkapis.Pipe), mock.ErrorOrNil(call.Result[1])
 }
 
-func (c *MockKameletBindingsClient) Update(ctx context.Context, binding *camelkapis.KameletBinding, opts v1.UpdateOptions) (*camelkapis.KameletBinding, error) {
+func (c *MockKameletBindingsClient) Update(ctx context.Context, binding *camelkapis.Pipe, opts v1.UpdateOptions) (*camelkapis.Pipe, error) {
 	call := c.recorder.r.VerifyCall("Update")
-	return call.Result[0].(*camelkapis.KameletBinding), mock.ErrorOrNil(call.Result[1])
+	return call.Result[0].(*camelkapis.Pipe), mock.ErrorOrNil(call.Result[1])
 }
 
 // UpdateKameletBinding records a call for Update with the expected result and error (nil if none)
-func (sr *KameletRecorder) UpdateKameletBinding(binding *camelkapis.KameletBinding, err error) {
+func (sr *KameletRecorder) UpdateKameletBinding(binding *camelkapis.Pipe, err error) {
 	sr.r.Add("Update", nil, []interface{}{binding, err})
 }
 
-func (c *MockKameletBindingsClient) UpdateStatus(ctx context.Context, binding *camelkapis.KameletBinding, opts v1.UpdateOptions) (*camelkapis.KameletBinding, error) {
+func (c *MockKameletBindingsClient) UpdateStatus(ctx context.Context, binding *camelkapis.Pipe, opts v1.UpdateOptions) (*camelkapis.Pipe, error) {
 	panic("implement me")
 }
 
@@ -221,24 +220,24 @@ func (c *MockKameletBindingsClient) DeleteCollection(ctx context.Context, opts v
 }
 
 // List records a call for ListKameletBindings with the expected result and error (nil if none)
-func (sr *KameletRecorder) ListBindings(bindings *camelkapis.KameletBindingList, err error) {
+func (sr *KameletRecorder) ListBindings(bindings *camelkapis.PipeList, err error) {
 	sr.r.Add("List", nil, []interface{}{bindings, err})
 }
 
-func (c *MockKameletBindingsClient) List(ctx context.Context, opts v1.ListOptions) (*camelkapis.KameletBindingList, error) {
+func (c *MockKameletBindingsClient) List(ctx context.Context, opts v1.ListOptions) (*camelkapis.PipeList, error) {
 	call := c.recorder.r.VerifyCall("List")
-	return call.Result[0].(*camelkapis.KameletBindingList), mock.ErrorOrNil(call.Result[1])
+	return call.Result[0].(*camelkapis.PipeList), mock.ErrorOrNil(call.Result[1])
 }
 
 // GetKameletBinding records a call for Get with the expected result and error (nil if none)
-func (sr *KameletRecorder) GetKameletBinding(binding *camelkapis.KameletBinding, err error) {
+func (sr *KameletRecorder) GetKameletBinding(binding *camelkapis.Pipe, err error) {
 	sr.r.Add("Get", nil, []interface{}{binding, err})
 }
 
 // Get performs a previously recorded action
-func (c *MockKameletBindingsClient) Get(ctx context.Context, name string, opts v1.GetOptions) (*camelkapis.KameletBinding, error) {
+func (c *MockKameletBindingsClient) Get(ctx context.Context, name string, opts v1.GetOptions) (*camelkapis.Pipe, error) {
 	call := c.recorder.r.VerifyCall("Get")
-	return call.Result[0].(*camelkapis.KameletBinding), mock.ErrorOrNil(call.Result[1])
+	return call.Result[0].(*camelkapis.Pipe), mock.ErrorOrNil(call.Result[1])
 }
 
 func (c *MockKameletBindingsClient) Watch(ctx context.Context, opts v1.ListOptions) (watch.Interface, error) {

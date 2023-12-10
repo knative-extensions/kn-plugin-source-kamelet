@@ -23,7 +23,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
+	camelkapisv1 "github.com/apache/camel-k/v2/pkg/apis/camel/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/cli-runtime/pkg/genericclioptions"
 	"knative.dev/client-pkg/pkg/printers"
@@ -120,7 +120,7 @@ func NewDescribeCommand(p *KameletPluginParams) *cobra.Command {
 	return cmd
 }
 
-func writeKamelet(dw printers.PrefixWriter, kamelet *v1alpha1.Kamelet, printDetails bool) {
+func writeKamelet(dw printers.PrefixWriter, kamelet *camelkapisv1.Kamelet, printDetails bool) {
 	commands.WriteMetadata(dw, &kamelet.ObjectMeta, printDetails)
 	if kamelet.Spec.Definition.Title != "" {
 		dw.WriteAttribute("Description", fmt.Sprintf("%s - %s", kamelet.Spec.Definition.Title, kamelet.Spec.Definition.Description))
@@ -136,7 +136,7 @@ func writeKamelet(dw printers.PrefixWriter, kamelet *v1alpha1.Kamelet, printDeta
 	writeKameletProperties(dw, kamelet)
 }
 
-func writeKameletProperties(dw printers.PrefixWriter, kamelet *v1alpha1.Kamelet) {
+func writeKameletProperties(dw printers.PrefixWriter, kamelet *camelkapisv1.Kamelet) {
 	section := dw.WriteAttribute("Properties", "")
 	maxLen := getMaxPropertyNameLen(kamelet.Spec.Definition.Properties)
 	format := "%-" + maxLen + "s %-4s %-8s %s\n"
@@ -164,7 +164,7 @@ func isRequired(name string, required []string) string {
 	return " "
 }
 
-func getMaxPropertyNameLen(properties map[string]v1alpha1.JSONSchemaProps) string {
+func getMaxPropertyNameLen(properties map[string]camelkapisv1.JSONSchemaProp) string {
 	max := 0
 	for name := range properties {
 		if len(name) > max {
@@ -174,7 +174,7 @@ func getMaxPropertyNameLen(properties map[string]v1alpha1.JSONSchemaProps) strin
 	return strconv.Itoa(max)
 }
 
-func asApiConditions(conditions []v1alpha1.KameletCondition) apis.Conditions {
+func asApiConditions(conditions []camelkapisv1.KameletCondition) apis.Conditions {
 	var aConditions apis.Conditions
 
 	for _, condition := range conditions {

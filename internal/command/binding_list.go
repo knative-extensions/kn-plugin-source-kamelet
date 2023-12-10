@@ -19,7 +19,7 @@ package command
 import (
 	"fmt"
 
-	camelkv1alpha1 "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
+	camelkapisv1 "github.com/apache/camel-k/v2/pkg/apis/camel/v1"
 	"github.com/spf13/cobra"
 	corev1 "k8s.io/api/core/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -57,7 +57,7 @@ func newBindingListCommand(p *KameletPluginParams) *cobra.Command {
 				return err
 			}
 
-			bindingList, err := kameletClient.KameletBindings(namespace).List(p.Context, v1.ListOptions{})
+			bindingList, err := kameletClient.Pipes(namespace).List(p.Context, v1.ListOptions{})
 			if err != nil {
 				return err
 			}
@@ -65,7 +65,7 @@ func newBindingListCommand(p *KameletPluginParams) *cobra.Command {
 				fmt.Fprintf(cmd.OutOrStdout(), "No resources found.\n")
 				return nil
 			}
-			updateKameletBindingListGvk(bindingList)
+			updatePipeListGvk(bindingList)
 
 			// empty namespace indicates all-namespaces flag is specified
 			if namespace == "" {
@@ -101,7 +101,7 @@ func ListBindingHandlers(h hprinters.PrintHandler) {
 }
 
 // printKameletList populates the Kamelet list table rows
-func printBindingList(bindingList *camelkv1alpha1.KameletBindingList, options hprinters.PrintOptions) ([]metav1beta1.TableRow, error) {
+func printBindingList(bindingList *camelkapisv1.PipeList, options hprinters.PrintOptions) ([]metav1beta1.TableRow, error) {
 	rows := make([]metav1beta1.TableRow, 0, len(bindingList.Items))
 
 	for i := range bindingList.Items {
@@ -116,7 +116,7 @@ func printBindingList(bindingList *camelkv1alpha1.KameletBindingList, options hp
 }
 
 // printBinding populates the Kamelet binding table rows
-func printBinding(binding *camelkv1alpha1.KameletBinding, options hprinters.PrintOptions) ([]metav1beta1.TableRow, error) {
+func printBinding(binding *camelkapisv1.Pipe, options hprinters.PrintOptions) ([]metav1beta1.TableRow, error) {
 	name := binding.Name
 	phase := binding.Status.Phase
 	age := commands.TranslateTimestampSince(binding.CreationTimestamp)
@@ -143,7 +143,7 @@ func printBinding(binding *camelkv1alpha1.KameletBinding, options hprinters.Prin
 }
 
 // bindingConditionsValue returns the True conditions count among total conditions
-func bindingConditionsValue(conditions []camelkv1alpha1.KameletBindingCondition) string {
+func bindingConditionsValue(conditions []camelkapisv1.PipeCondition) string {
 	var ok int
 	for _, condition := range conditions {
 		if condition.Status == "True" {
@@ -154,9 +154,9 @@ func bindingConditionsValue(conditions []camelkv1alpha1.KameletBindingCondition)
 }
 
 // bindingReadyCondition returns status of resource's Ready type condition
-func bindingReadyCondition(conditions []camelkv1alpha1.KameletBindingCondition) string {
+func bindingReadyCondition(conditions []camelkapisv1.PipeCondition) string {
 	for _, condition := range conditions {
-		if condition.Type == camelkv1alpha1.KameletBindingConditionReady {
+		if condition.Type == camelkapisv1.PipeConditionReady {
 			return string(condition.Status)
 		}
 	}
@@ -165,9 +165,9 @@ func bindingReadyCondition(conditions []camelkv1alpha1.KameletBindingCondition) 
 
 // bindingNonReadyConditionReason returns formatted string of
 // reason and message for non ready conditions
-func bindingNonReadyConditionReason(conditions []camelkv1alpha1.KameletBindingCondition) string {
+func bindingNonReadyConditionReason(conditions []camelkapisv1.PipeCondition) string {
 	for _, condition := range conditions {
-		if condition.Type == camelkv1alpha1.KameletBindingConditionReady {
+		if condition.Type == camelkapisv1.PipeConditionReady {
 			if condition.Status == corev1.ConditionTrue {
 				return ""
 			}

@@ -24,9 +24,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	camelv1 "github.com/apache/camel-k/pkg/apis/camel/v1"
-	"github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
-	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
+	camelkapisv1 "github.com/apache/camel-k/v2/pkg/apis/camel/v1"
+	camelkv1 "github.com/apache/camel-k/v2/pkg/client/camel/clientset/versioned/typed/camel/v1"
 
 	"github.com/spf13/cobra"
 	corev1 "k8s.io/api/core/v1"
@@ -115,7 +114,7 @@ func newBindingCreateCommand(p *KameletPluginParams) *cobra.Command {
 	return cmd
 }
 
-func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Context, namespace string, options CreateBindingOptions) error {
+func createBinding(client camelkv1.CamelV1Interface, ctx context.Context, namespace string, options CreateBindingOptions) error {
 	kamelet, err := client.Kamelets(namespace).Get(ctx, options.Source, v1.GetOptions{})
 	if err != nil {
 		return knerrors.GetError(err)
@@ -133,11 +132,11 @@ func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Con
 	if err != nil {
 		return knerrors.GetError(err)
 	}
-	sourceEndpoint := v1alpha1.Endpoint{
+	sourceEndpoint := camelkapisv1.Endpoint{
 		Properties: &sourceEndpointProps,
 		Ref: &corev1.ObjectReference{
-			Kind:       v1alpha1.KameletKind,
-			APIVersion: v1alpha1.SchemeGroupVersion.String(),
+			Kind:       camelkapisv1.KameletKind,
+			APIVersion: camelkapisv1.SchemeGroupVersion.String(),
 			Name:       kamelet.Name,
 			Namespace:  kamelet.Namespace,
 		},
@@ -176,37 +175,37 @@ func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Con
 	if err != nil {
 		return knerrors.GetError(err)
 	}
-	sinkEndpoint := v1alpha1.Endpoint{
+	sinkEndpoint := camelkapisv1.Endpoint{
 		Properties: &sinkEndpointProps,
 		Ref:        &sinkRef,
 	}
 
 	name := nameFor(options.Name, options.Source, sinkRef)
 
-	binding := v1alpha1.KameletBinding{
+	binding := camelkapisv1.Pipe{
 		ObjectMeta: v1.ObjectMeta{
 			Namespace: namespace,
 			Name:      name,
 		},
-		Spec: v1alpha1.KameletBindingSpec{
+		Spec: camelkapisv1.PipeSpec{
 			Source: sourceEndpoint,
 			Sink:   sinkEndpoint,
 		},
 	}
 
 	existed := false
-	_, err = client.KameletBindings(namespace).Create(ctx, &binding, v1.CreateOptions{})
+	_, err = client.Pipes(namespace).Create(ctx, &binding, v1.CreateOptions{})
 	if err != nil && k8serrors.IsAlreadyExists(err) {
 		if options.Force {
 			existed = true
 
-			existing, err := client.KameletBindings(namespace).Get(ctx, binding.Name, v1.GetOptions{})
+			existing, err := client.Pipes(namespace).Get(ctx, binding.Name, v1.GetOptions{})
 			if err != nil {
 				return knerrors.GetError(err)
 			}
 			// Update the custom resource
 			binding.ResourceVersion = existing.ResourceVersion
-			_, err = client.KameletBindings(namespace).Update(ctx, &binding, v1.UpdateOptions{})
+			_, err = client.Pipes(namespace).Update(ctx, &binding, v1.UpdateOptions{})
 			if err != nil {
 				return knerrors.GetError(err)
 			}
@@ -278,7 +277,7 @@ func decodeSink(sink string) (corev1.ObjectReference, error) {
 	return ref, nil
 }
 
-func verifyProperties(kamelet *v1alpha1.Kamelet, endpoint v1alpha1.Endpoint) error {
+func verifyProperties(kamelet *camelkapisv1.Kamelet, endpoint camelkapisv1.Endpoint) error {
 	pMap, err := endpoint.Properties.GetPropertyMap()
 
 	if kamelet.Spec.Definition != nil && len(kamelet.Spec.Definition.Required) > 0 {
@@ -319,16 +318,16 @@ func parseProperties(properties []string) (map[string]string, error) {
 	return props, nil
 }
 
-func asEndpointProperties(props map[string]string) (v1alpha1.EndpointProperties, error) {
+func asEndpointProperties(props map[string]string) (camelkapisv1.EndpointProperties, error) {
 	if len(props) == 0 {
-		return v1alpha1.EndpointProperties{}, nil
+		return camelkapisv1.EndpointProperties{}, nil
 	}
 	data, err := json.Marshal(props)
 	if err != nil {
-		return v1alpha1.EndpointProperties{}, err
+		return camelkapisv1.EndpointProperties{}, err
 	}
-	return v1alpha1.EndpointProperties{
-		RawMessage: camelv1.RawMessage(data),
+	return camelkapisv1.EndpointProperties{
+		RawMessage: camelkapisv1.RawMessage(data),
 	}, nil
 }
 
