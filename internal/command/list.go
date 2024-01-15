@@ -24,7 +24,7 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	"knative.dev/client-pkg/pkg/kn/commands"
 
-	camelkv1alpha1 "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
+	camelkapisv1 "github.com/apache/camel-k/v2/pkg/apis/camel/v1"
 	"github.com/spf13/cobra"
 	metav1beta1 "k8s.io/apimachinery/pkg/apis/meta/v1beta1"
 	"knative.dev/client-pkg/pkg/kn/commands/flags"
@@ -108,7 +108,7 @@ func ListHandlers(h hprinters.PrintHandler) {
 }
 
 // printKameletList populates the Kamelet list table rows
-func printKameletList(kameletList *camelkv1alpha1.KameletList, options hprinters.PrintOptions) ([]metav1beta1.TableRow, error) {
+func printKameletList(kameletList *camelkapisv1.KameletList, options hprinters.PrintOptions) ([]metav1beta1.TableRow, error) {
 	rows := make([]metav1beta1.TableRow, 0, len(kameletList.Items))
 
 	for i := range kameletList.Items {
@@ -123,7 +123,7 @@ func printKameletList(kameletList *camelkv1alpha1.KameletList, options hprinters
 }
 
 // printKamelet populates the Kamelet table rows
-func printKamelet(kamelet *camelkv1alpha1.Kamelet, options hprinters.PrintOptions) ([]metav1beta1.TableRow, error) {
+func printKamelet(kamelet *camelkapisv1.Kamelet, options hprinters.PrintOptions) ([]metav1beta1.TableRow, error) {
 	name := kamelet.Name
 	phase := kamelet.Status.Phase
 	age := commands.TranslateTimestampSince(kamelet.CreationTimestamp)
@@ -150,7 +150,7 @@ func printKamelet(kamelet *camelkv1alpha1.Kamelet, options hprinters.PrintOption
 }
 
 // conditionsValue returns the True conditions count among total conditions
-func conditionsValue(conditions []camelkv1alpha1.KameletCondition) string {
+func conditionsValue(conditions []camelkapisv1.KameletCondition) string {
 	var ok int
 	for _, condition := range conditions {
 		if condition.Status == "True" {
@@ -161,9 +161,9 @@ func conditionsValue(conditions []camelkv1alpha1.KameletCondition) string {
 }
 
 // readyCondition returns status of resource's Ready type condition
-func readyCondition(conditions []camelkv1alpha1.KameletCondition) string {
+func readyCondition(conditions []camelkapisv1.KameletCondition) string {
 	for _, condition := range conditions {
-		if condition.Type == camelkv1alpha1.KameletConditionReady {
+		if condition.Type == camelkapisv1.KameletConditionReady {
 			return string(condition.Status)
 		}
 	}
@@ -172,9 +172,9 @@ func readyCondition(conditions []camelkv1alpha1.KameletCondition) string {
 
 // NonReadyConditionReason returns formatted string of
 // reason and message for non ready conditions
-func nonReadyConditionReason(conditions []camelkv1alpha1.KameletCondition) string {
+func nonReadyConditionReason(conditions []camelkapisv1.KameletCondition) string {
 	for _, condition := range conditions {
-		if condition.Type == camelkv1alpha1.KameletConditionReady {
+		if condition.Type == camelkapisv1.KameletConditionReady {
 			if condition.Status == corev1.ConditionTrue {
 				return ""
 			}

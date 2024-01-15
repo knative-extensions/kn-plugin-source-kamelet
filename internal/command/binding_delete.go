@@ -24,7 +24,7 @@ import (
 
 	knerrors "knative.dev/client-pkg/pkg/errors"
 
-	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
+	camelkv1 "github.com/apache/camel-k/v2/pkg/client/camel/clientset/versioned/typed/camel/v1"
 
 	"github.com/spf13/cobra"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -71,8 +71,8 @@ func newBindingDeleteCommand(p *KameletPluginParams) *cobra.Command {
 	return cmd
 }
 
-func deleteBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Context, name string, namespace string, cmdOut io.Writer) error {
-	err := client.KameletBindings(namespace).Delete(ctx, name, v1.DeleteOptions{})
+func deleteBinding(client camelkv1.CamelV1Interface, ctx context.Context, name string, namespace string, cmdOut io.Writer) error {
+	err := client.Pipes(namespace).Delete(ctx, name, v1.DeleteOptions{})
 	if err != nil {
 		return knerrors.GetError(err)
 	}

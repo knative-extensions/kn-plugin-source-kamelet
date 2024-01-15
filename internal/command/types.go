@@ -18,16 +18,14 @@ package command
 
 import (
 	"context"
+	camelk "github.com/apache/camel-k/v2/pkg/client/camel/clientset/versioned"
+	camelkv1 "github.com/apache/camel-k/v2/pkg/client/camel/clientset/versioned/typed/camel/v1"
 	"io"
-
 	corev1 "k8s.io/api/core/v1"
+	"knative.dev/client-pkg/pkg/kn/commands"
 	eventingv1 "knative.dev/eventing/pkg/apis/eventing/v1"
 	messagingv1 "knative.dev/eventing/pkg/apis/messaging/v1"
 	servingv1 "knative.dev/serving/pkg/apis/serving/v1"
-
-	camelk "github.com/apache/camel-k/pkg/client/camel/clientset/versioned"
-	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
-	"knative.dev/client-pkg/pkg/kn/commands"
 )
 
 const (
@@ -58,7 +56,7 @@ type KameletPluginParams struct {
 	*commands.KnParams
 	Context          context.Context
 	ContextCancel    context.CancelFunc
-	NewKameletClient func() (camelkv1alpha1.CamelV1alpha1Interface, error)
+	NewKameletClient func() (camelkv1.CamelV1Interface, error)
 }
 
 func (params *KameletPluginParams) Initialize() {
@@ -72,7 +70,7 @@ func (params *KameletPluginParams) Initialize() {
 	}
 }
 
-func (params *KameletPluginParams) newKameletClient() (camelkv1alpha1.CamelV1alpha1Interface, error) {
+func (params *KameletPluginParams) newKameletClient() (camelkv1.CamelV1Interface, error) {
 	restConfig, err := params.RestConfig()
 	if err != nil {
 		return nil, err
@@ -83,7 +81,7 @@ func (params *KameletPluginParams) newKameletClient() (camelkv1alpha1.CamelV1alp
 		return nil, err
 	}
 
-	return client.CamelV1alpha1(), nil
+	return client.CamelV1(), nil
 }
 
 // CreateBindingOptions holding settings and options on the create binding command

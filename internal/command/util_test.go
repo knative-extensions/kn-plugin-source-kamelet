@@ -46,7 +46,7 @@ func TestUpdateKameletListGvk(t *testing.T) {
 func TestUpdateKameletBindingGvk(t *testing.T) {
 	kb := v1alpha1.KameletBinding{}
 	assert.True(t, kb.GroupVersionKind().Empty())
-	updateKameletBindingGvk(&kb)
+	updatePipeGvk(&kb)
 	verifyGvk(t, "KameletBinding", &kb)
 }
 
@@ -57,7 +57,7 @@ func TestUpdateKameletBindingListGvk(t *testing.T) {
 	}
 	assert.True(t, kl.GroupVersionKind().Empty())
 	assert.True(t, kl.Items[0].GroupVersionKind().Empty())
-	updateKameletBindingListGvk(&kl)
+	updatePipeListGvk(&kl)
 	verifyGvk(t, "KameletBindingList", &kl)
 	verifyGvk(t, "KameletBinding", &kl.Items[0])
 }
