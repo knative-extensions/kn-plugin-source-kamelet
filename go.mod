@@ -2,8 +2,6 @@ module knative.dev/kn-plugin-source-kamelet
 
 go 1.21
 
-toolchain go1.21.6
-
 require (
 	github.com/apache/camel-k/pkg/apis/camel v1.3.1
 	github.com/apache/camel-k/pkg/client/camel v1.3.1
