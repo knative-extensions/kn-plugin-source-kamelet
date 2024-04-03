@@ -29,8 +29,8 @@ import (
 	"knative.dev/client-pkg/pkg/printers"
 	"knative.dev/pkg/apis"
 
-	knerrors "knative.dev/client-pkg/pkg/errors"
 	"knative.dev/client-pkg/pkg/commands"
+	knerrors "knative.dev/client-pkg/pkg/errors"
 
 	"github.com/spf13/cobra"
 )

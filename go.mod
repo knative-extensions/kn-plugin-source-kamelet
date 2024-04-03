@@ -5,6 +5,8 @@ go 1.21
 require (
 	github.com/apache/camel-k/pkg/apis/camel v1.3.1
 	github.com/apache/camel-k/pkg/client/camel v1.3.1
+	github.com/hashicorp/golang-lru v1.0.2
+	github.com/hashicorp/hcl v1.0.0
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
 	gotest.tools/v3 v3.3.0
@@ -54,8 +56,6 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0 // indirect
-	github.com/hashicorp/golang-lru v1.0.2 // indirect
-	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
