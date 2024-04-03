@@ -28,7 +28,7 @@ import (
 
 	"github.com/spf13/cobra"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"knative.dev/client-pkg/pkg/kn/commands"
+	"knative.dev/client-pkg/pkg/commands"
 )
 
 var bindingDeleteExample = `
