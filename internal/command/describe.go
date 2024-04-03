@@ -30,7 +30,7 @@ import (
 	"knative.dev/pkg/apis"
 
 	knerrors "knative.dev/client-pkg/pkg/errors"
-	"knative.dev/client-pkg/pkg/kn/commands"
+	"knative.dev/client-pkg/pkg/commands"
 
 	"github.com/spf13/cobra"
 )

@@ -29,7 +29,7 @@ import (
 	"github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
 	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
 	k8serrors "k8s.io/apimachinery/pkg/api/errors"
-	"knative.dev/client-pkg/pkg/kn/commands"
+	"knative.dev/client-pkg/pkg/commands"
 	"knative.dev/kn-plugin-source-kamelet/internal/client"
 
 	"gotest.tools/v3/assert"

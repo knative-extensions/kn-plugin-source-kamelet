@@ -22,7 +22,7 @@ import (
 	"testing"
 
 	camelkv1alpha1 "github.com/apache/camel-k/pkg/client/camel/clientset/versioned/typed/camel/v1alpha1"
-	"knative.dev/client-pkg/pkg/kn/commands"
+	"knative.dev/client-pkg/pkg/commands"
 	"knative.dev/kn-plugin-source-kamelet/internal/client"
 
 	"gotest.tools/v3/assert"
