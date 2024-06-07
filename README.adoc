@@ -1,3 +1,5 @@
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fknative-extensions%2Fkn-plugin-source-kamelet.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fknative-extensions%2Fkn-plugin-source-kamelet?ref=badge_shield)
+
 = kn-source-kamelet
 
 **[This component is BETA](https://github.com/knative/community/tree/main/mechanics/MATURITY-LEVELS.md)**
@@ -277,3 +279,7 @@ Git Revision: a099aaf
 
 As you can see it prints out the version, (or a generated timestamp when this plugin is built from a non-released commit)
 the date when the plugin has been built and the actual Git revision.
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fknative-extensions%2Fkn-plugin-source-kamelet.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fknative-extensions%2Fkn-plugin-source-kamelet?ref=badge_large)
