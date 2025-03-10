@@ -35,6 +35,14 @@ github.com/census-instrumentation/opencensus-proto/gen-go/agent/trace/v1
 github.com/census-instrumentation/opencensus-proto/gen-go/metrics/v1
 github.com/census-instrumentation/opencensus-proto/gen-go/resource/v1
 github.com/census-instrumentation/opencensus-proto/gen-go/trace/v1
+# github.com/cert-manager/cert-manager v1.16.3
+## explicit; go 1.22.0
+github.com/cert-manager/cert-manager/pkg/apis/acme
+github.com/cert-manager/cert-manager/pkg/apis/acme/v1
+github.com/cert-manager/cert-manager/pkg/apis/certmanager
+github.com/cert-manager/cert-manager/pkg/apis/certmanager/v1
+github.com/cert-manager/cert-manager/pkg/apis/meta
+github.com/cert-manager/cert-manager/pkg/apis/meta/v1
 # github.com/cespare/xxhash/v2 v2.3.0
 ## explicit; go 1.11
 github.com/cespare/xxhash/v2
@@ -127,8 +135,8 @@ github.com/google/gnostic-models/extensions
 github.com/google/gnostic-models/jsonschema
 github.com/google/gnostic-models/openapiv2
 github.com/google/gnostic-models/openapiv3
-# github.com/google/go-cmp v0.6.0
-## explicit; go 1.13
+# github.com/google/go-cmp v0.7.0
+## explicit; go 1.21
 github.com/google/go-cmp/cmp
 github.com/google/go-cmp/cmp/cmpopts
 github.com/google/go-cmp/cmp/internal/diff
@@ -160,8 +168,8 @@ github.com/grpc-ecosystem/grpc-gateway/v2/utilities
 ## explicit; go 1.12
 github.com/hashicorp/golang-lru
 github.com/hashicorp/golang-lru/simplelru
-# github.com/hashicorp/hcl v1.0.0
-## explicit
+# github.com/hashicorp/hcl v1.0.1-vault-5
+## explicit; go 1.15
 github.com/hashicorp/hcl
 github.com/hashicorp/hcl/hcl/ast
 github.com/hashicorp/hcl/hcl/parser
@@ -1005,7 +1013,7 @@ knative.dev/client-pkg/pkg/sources/v1beta2
 knative.dev/client-pkg/pkg/util
 knative.dev/client-pkg/pkg/util/mock
 knative.dev/client-pkg/pkg/wait
-# knative.dev/eventing v0.44.1-0.20250224164420-ae049c8b0ac4
+# knative.dev/eventing v0.44.1-0.20250310113904-7be5c1964b3f
 ## explicit; go 1.23.0
 knative.dev/eventing/pkg/apis/common/integration/v1alpha1
 knative.dev/eventing/pkg/apis/config
@@ -1042,12 +1050,12 @@ knative.dev/eventing/pkg/eventingtls
 # knative.dev/hack v0.0.0-20250219013704-306ce745e077
 ## explicit; go 1.21
 knative.dev/hack
-# knative.dev/networking v0.0.0-20250217154350-2cde4327c6c8
+# knative.dev/networking v0.0.0-20250226145929-863b7af736fb
 ## explicit; go 1.23.0
 knative.dev/networking/pkg/apis/networking
 knative.dev/networking/pkg/apis/networking/v1alpha1
 knative.dev/networking/pkg/config
-# knative.dev/pkg v0.0.0-20250219013713-9e265611c097
+# knative.dev/pkg v0.0.0-20250226145529-0372c089c78f
 ## explicit; go 1.23.0
 knative.dev/pkg/apis
 knative.dev/pkg/apis/duck
@@ -1081,7 +1089,7 @@ knative.dev/pkg/resolver
 knative.dev/pkg/signals
 knative.dev/pkg/system
 knative.dev/pkg/tracker
-# knative.dev/serving v0.44.1-0.20250220121848-87c07ee250da
+# knative.dev/serving v0.44.1-0.20250307122301-c09ff6cf1822
 ## explicit; go 1.23.0
 knative.dev/serving/pkg/apis/autoscaling
 knative.dev/serving/pkg/apis/autoscaling/v1alpha1
@@ -1096,6 +1104,9 @@ knative.dev/serving/pkg/client/clientset/versioned/typed/serving/v1
 knative.dev/serving/pkg/client/clientset/versioned/typed/serving/v1/fake
 knative.dev/serving/pkg/client/clientset/versioned/typed/serving/v1beta1
 knative.dev/serving/pkg/networking
+# sigs.k8s.io/gateway-api v1.1.0
+## explicit; go 1.22.0
+sigs.k8s.io/gateway-api/apis/v1
 # sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8
 ## explicit; go 1.23
 sigs.k8s.io/json
