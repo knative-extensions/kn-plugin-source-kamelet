@@ -6,7 +6,7 @@ require (
 	github.com/apache/camel-k/pkg/apis/camel v1.3.1
 	github.com/apache/camel-k/pkg/client/camel v1.3.1
 	github.com/hashicorp/golang-lru v1.0.2
-	github.com/hashicorp/hcl v1.0.0
+	github.com/hashicorp/hcl v1.0.1-vault-5
 	github.com/spf13/cobra v1.8.1
 	github.com/stretchr/testify v1.10.0
 	gotest.tools/v3 v3.3.0
@@ -15,10 +15,10 @@ require (
 	k8s.io/cli-runtime v0.29.2
 	k8s.io/client-go v0.32.2
 	knative.dev/client-pkg v0.0.0-20250219014434-98dd4c09798c
-	knative.dev/eventing v0.44.1-0.20250224164420-ae049c8b0ac4
+	knative.dev/eventing v0.44.1-0.20250310113904-7be5c1964b3f
 	knative.dev/hack v0.0.0-20250219013704-306ce745e077
-	knative.dev/pkg v0.0.0-20250219013713-9e265611c097
-	knative.dev/serving v0.44.1-0.20250220121848-87c07ee250da
+	knative.dev/pkg v0.0.0-20250226145529-0372c089c78f
+	knative.dev/serving v0.44.1-0.20250307122301-c09ff6cf1822
 )
 
 require (
@@ -29,6 +29,7 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blendle/zapdriver v1.3.1 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.4.1 // indirect
+	github.com/cert-manager/cert-manager v1.16.3 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cloudevents/sdk-go/sql/v2 v2.15.2 // indirect
 	github.com/cloudevents/sdk-go/v2 v2.15.2 // indirect
@@ -50,7 +51,7 @@ require (
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/btree v1.1.2 // indirect
 	github.com/google/gnostic-models v0.6.9 // indirect
-	github.com/google/go-cmp v0.6.0 // indirect
+	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/go-containerregistry v0.20.3 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
@@ -122,7 +123,8 @@ require (
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20241212222426-2c72e554b1e7 // indirect
 	k8s.io/utils v0.0.0-20241210054802-24370beab758 // indirect
-	knative.dev/networking v0.0.0-20250217154350-2cde4327c6c8 // indirect
+	knative.dev/networking v0.0.0-20250226145929-863b7af736fb // indirect
+	sigs.k8s.io/gateway-api v1.1.0 // indirect
 	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8 // indirect
 	sigs.k8s.io/kustomize/api v0.13.5-0.20230601165947-6ce0bf390ce3 // indirect
 	sigs.k8s.io/kustomize/kyaml v0.14.3-0.20230601165947-6ce0bf390ce3 // indirect
