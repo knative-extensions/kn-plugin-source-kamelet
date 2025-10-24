@@ -17,6 +17,8 @@ limitations under the License.
 package v1alpha1
 
 import (
+	cmv1 "github.com/cert-manager/cert-manager/pkg/apis/certmanager/v1"
+	cmmeta "github.com/cert-manager/cert-manager/pkg/apis/meta/v1"
 	appsv1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"knative.dev/pkg/apis"
@@ -35,12 +37,23 @@ const (
 	// IntegrationSinkConditionEventPoliciesReady has status True when all the applying EventPolicies for this
 	// IntegrationSink are ready.
 	IntegrationSinkConditionEventPoliciesReady apis.ConditionType = "EventPoliciesReady"
+
+	// IntegrationSinkConditionCertificateReady has status True when the IntegrationSink's certificate is ready.
+	IntegrationSinkConditionCertificateReady apis.ConditionType = "CertificateReady"
+
+	// Certificate related condition reasons
+	IntegrationSinkCertificateNotReady string = "CertificateNotReady"
+
+	// IntegrationSinkTrustBundlePropagated is configured to indicate whether the
+	// TLS trust bundle has been properly propagated.
+	IntegrationSinkTrustBundlePropagated apis.ConditionType = "TrustBundlePropagated"
 )
 
 var IntegrationSinkCondSet = apis.NewLivingConditionSet(
 	IntegrationSinkConditionAddressable,
 	IntegrationSinkConditionDeploymentReady,
 	IntegrationSinkConditionEventPoliciesReady,
+	IntegrationSinkTrustBundlePropagated,
 )
 
 // GetConditionSet retrieves the condition set for this resource. Implements the KRShaped interface.
@@ -112,12 +125,57 @@ func (s *IntegrationSinkStatus) PropagateDeploymentStatus(d *appsv1.DeploymentSt
 	}
 }
 
-func (s *IntegrationSinkStatus) SetAddress(address *duckv1.Addressable) {
-	s.Address = address
-	if address == nil || address.URL.IsEmpty() {
-		IntegrationSinkCondSet.Manage(s).MarkFalse(IntegrationSinkConditionAddressable, "EmptyHostname", "hostname is the empty string")
-	} else {
-		IntegrationSinkCondSet.Manage(s).MarkTrue(IntegrationSinkConditionAddressable)
-
+func (s *IntegrationSinkStatus) PropagateCertificateStatus(cs cmv1.CertificateStatus) bool {
+	var topLevel *cmv1.CertificateCondition
+	for _, cond := range cs.Conditions {
+		if cond.Type == cmv1.CertificateConditionReady {
+			topLevel = &cond
+			break
+		}
 	}
+
+	if topLevel == nil {
+		IntegrationSinkCondSet.Manage(s).MarkUnknown(IntegrationSinkConditionCertificateReady,
+			IntegrationSinkCertificateNotReady, "Certificate is progressing")
+		return false
+	}
+
+	if topLevel.Status == cmmeta.ConditionUnknown {
+		IntegrationSinkCondSet.Manage(s).MarkUnknown(IntegrationSinkConditionCertificateReady,
+			IntegrationSinkCertificateNotReady, "Certificate is progressing, "+topLevel.Reason+" Message: "+topLevel.Message)
+		return false
+	}
+
+	if topLevel.Status == cmmeta.ConditionFalse {
+		IntegrationSinkCondSet.Manage(s).MarkFalse(IntegrationSinkConditionCertificateReady,
+			IntegrationSinkCertificateNotReady, "Certificate is not ready, "+topLevel.Reason+" Message: "+topLevel.Message)
+		return false
+	}
+
+	IntegrationSinkCondSet.Manage(s).MarkTrue(IntegrationSinkConditionCertificateReady)
+	return true
+}
+
+func (s *IntegrationSinkStatus) SetAddresses(addresses ...duckv1.Addressable) {
+	if len(addresses) == 0 || addresses[0].URL.IsEmpty() {
+		IntegrationSinkCondSet.Manage(s).MarkFalse(IntegrationSinkConditionAddressable, "EmptyHostname", "hostname is the empty string")
+		return
+	}
+
+	s.AddressStatus = duckv1.AddressStatus{
+		Address:   &addresses[0],
+		Addresses: addresses,
+	}
+	IntegrationSinkCondSet.Manage(s).MarkTrue(IntegrationSinkConditionAddressable)
+}
+
+// MarkFailedTrustBundlePropagation marks the IntegrationSink's SinkBindingTrustBundlePropagated condition to False with
+// the provided reason and message.
+func (s *IntegrationSinkStatus) MarkFailedTrustBundlePropagation(reason, message string) {
+	IntegrationSinkCondSet.Manage(s).MarkFalse(IntegrationSinkTrustBundlePropagated, reason, message)
+}
+
+// MarkTrustBundlePropagated marks the IntegrationSink's SinkBindingTrustBundlePropagated condition to True.
+func (s *IntegrationSinkStatus) MarkTrustBundlePropagated() {
+	IntegrationSinkCondSet.Manage(s).MarkTrue(IntegrationSinkTrustBundlePropagated)
 }
