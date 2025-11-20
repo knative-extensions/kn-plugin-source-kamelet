@@ -46,6 +46,7 @@ func TestBindSetup(t *testing.T) {
 	assert.Equal(t, bindCmd.Short, "Create Kamelet bindings and bind source to Knative broker, channel or service.")
 	assert.Assert(t, bindCmd.RunE != nil)
 }
+
 func TestBindErrorCaseMissingArgument(t *testing.T) {
 	mockClient := client.NewMockClient(t)
 	recorder := mockClient.Recorder()
@@ -78,7 +79,7 @@ func TestBindErrorCaseNoEventSource(t *testing.T) {
 	recorder.Get(kamelet, nil)
 
 	err := runBindCmd(mockClient, "k1", "--channel", "test")
-	assert.Error(t, err, "Kamelet k1 is not an event source")
+	assert.Error(t, err, "kamelet k1 is not an event source")
 	recorder.Validate()
 }
 

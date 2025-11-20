@@ -122,7 +122,7 @@ func createBinding(client camelkv1alpha1.CamelV1alpha1Interface, ctx context.Con
 	}
 
 	if !isEventSourceType(kamelet) {
-		return fmt.Errorf("Kamelet %s is not an event source", options.Source)
+		return fmt.Errorf("kamelet %s is not an event source", options.Source)
 	}
 
 	sourceProps, err := parseProperties(options.SourceProperties)

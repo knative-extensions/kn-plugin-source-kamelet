@@ -77,7 +77,7 @@ func TestBindingCreateErrorCaseNoEventSource(t *testing.T) {
 	recorder.Get(kamelet, nil)
 
 	err := runBindingCreateCmd(mockClient, "k1-to-sink", "--kamelet", "k1", "--channel", "test")
-	assert.Error(t, err, "Kamelet k1 is not an event source")
+	assert.Error(t, err, "kamelet k1 is not an event source")
 	recorder.Validate()
 }
 
