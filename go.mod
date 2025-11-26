@@ -15,10 +15,10 @@ require (
 	k8s.io/cli-runtime v0.29.2
 	k8s.io/client-go v0.34.2
 	knative.dev/client-pkg v0.0.0-20250708014830-d390b195d2e7
-	knative.dev/eventing v0.47.1-0.20251121120517-0effffedd9a9
-	knative.dev/hack v0.0.0-20251117013754-67a5b048bc27
-	knative.dev/pkg v0.0.0-20251124190527-7d24e8d1085f
-	knative.dev/serving v0.47.1-0.20251124122119-7856b63a140c
+	knative.dev/eventing v0.47.1-0.20251126013633-47e18d46cb6c
+	knative.dev/hack v0.0.0-20251126013634-1484a9e9b641
+	knative.dev/pkg v0.0.0-20251126013532-e853b1d1d6bb
+	knative.dev/serving v0.47.1-0.20251125185627-a083ca79ebda
 )
 
 require (
@@ -88,7 +88,7 @@ require (
 	go.opentelemetry.io/otel/trace v1.38.0 // indirect
 	go.starlark.net v0.0.0-20230525235612-a134d8f9ddca // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.uber.org/zap v1.27.0 // indirect
+	go.uber.org/zap v1.27.1 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
 	golang.org/x/net v0.47.0 // indirect
