@@ -15,10 +15,10 @@ require (
 	k8s.io/cli-runtime v0.29.2
 	k8s.io/client-go v0.34.3
 	knative.dev/client-pkg v0.0.0-20250708014830-d390b195d2e7
-	knative.dev/eventing v0.47.1-0.20260126225531-cb840efa2fbb
-	knative.dev/hack v0.0.0-20260120115810-bf6758cba446
-	knative.dev/pkg v0.0.0-20260120122510-4a022ed9999a
-	knative.dev/serving v0.47.1-0.20260126164531-4004491765ef
+	knative.dev/eventing v0.48.1-0.20260209140146-9e76da08faaa
+	knative.dev/hack v0.0.0-20260212092700-0126b283bf20
+	knative.dev/pkg v0.0.0-20260212134901-163986f52acf
+	knative.dev/serving v0.48.1-0.20260212135703-adfe89f82f78
 )
 
 require (
