@@ -10,15 +10,15 @@ require (
 	github.com/spf13/cobra v1.10.0
 	github.com/stretchr/testify v1.11.1
 	gotest.tools/v3 v3.3.0
-	k8s.io/api v0.35.1
-	k8s.io/apimachinery v0.35.1
+	k8s.io/api v0.35.2
+	k8s.io/apimachinery v0.35.2
 	k8s.io/cli-runtime v0.29.2
-	k8s.io/client-go v0.35.1
+	k8s.io/client-go v0.35.2
 	knative.dev/client-pkg v0.0.0-20250708014830-d390b195d2e7
-	knative.dev/eventing v0.48.1-0.20260216121903-d3feb16882a1
+	knative.dev/eventing v0.48.1-0.20260302160052-223b43fa6087
 	knative.dev/hack v0.0.0-20260212092700-0126b283bf20
-	knative.dev/pkg v0.0.0-20260221010456-9fb97f59fc24
-	knative.dev/serving v0.48.1-0.20260220012455-5f05f54a0279
+	knative.dev/pkg v0.0.0-20260302190359-1f39e94ef003
+	knative.dev/serving v0.48.1-0.20260301220923-ef443fb5114d
 )
 
 require (
@@ -91,7 +91,7 @@ require (
 	go.uber.org/zap v1.27.1 // indirect
 	go.yaml.in/yaml/v2 v2.4.3 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/net v0.50.0 // indirect
+	golang.org/x/net v0.51.0 // indirect
 	golang.org/x/oauth2 v0.34.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.41.0 // indirect
@@ -107,12 +107,12 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/apiextensions-apiserver v0.35.1 // indirect
-	k8s.io/apiserver v0.35.1 // indirect
+	k8s.io/apiextensions-apiserver v0.35.2 // indirect
+	k8s.io/apiserver v0.35.2 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20250910181357-589584f1c912 // indirect
 	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4 // indirect
-	knative.dev/networking v0.0.0-20260218015954-d37861cf9202 // indirect
+	knative.dev/networking v0.0.0-20260223015858-080d52fcffb4 // indirect
 	sigs.k8s.io/gateway-api v1.1.0 // indirect
 	sigs.k8s.io/json v0.0.0-20250730193827-2d320260d730 // indirect
 	sigs.k8s.io/kustomize/api v0.13.5-0.20230601165947-6ce0bf390ce3 // indirect
