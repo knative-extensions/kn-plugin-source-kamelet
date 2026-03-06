@@ -898,8 +898,8 @@ knative.dev/client-pkg/pkg/sources/v1beta2
 knative.dev/client-pkg/pkg/util
 knative.dev/client-pkg/pkg/util/mock
 knative.dev/client-pkg/pkg/wait
-# knative.dev/eventing v0.48.1-0.20260305172655-d9ba4018408f
-## explicit; go 1.24.0
+# knative.dev/eventing v0.48.1-0.20260306135956-3acf87a9fb20
+## explicit; go 1.25.0
 knative.dev/eventing/pkg/apis/common/integration/v1alpha1
 knative.dev/eventing/pkg/apis/config
 knative.dev/eventing/pkg/apis/duck
