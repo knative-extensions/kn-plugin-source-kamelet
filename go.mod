@@ -10,15 +10,15 @@ require (
 	github.com/spf13/cobra v1.10.0
 	github.com/stretchr/testify v1.11.1
 	gotest.tools/v3 v3.3.0
-	k8s.io/api v0.35.3
-	k8s.io/apimachinery v0.35.3
+	k8s.io/api v0.35.4
+	k8s.io/apimachinery v0.35.4
 	k8s.io/cli-runtime v0.29.2
-	k8s.io/client-go v0.35.3
+	k8s.io/client-go v0.35.4
 	knative.dev/client-pkg v0.0.0-20250708014830-d390b195d2e7
-	knative.dev/eventing v0.48.1-0.20260417124223-b2c6daba58c8
+	knative.dev/eventing v0.48.1-0.20260420100227-c76e74eeff85
 	knative.dev/hack v0.0.0-20260416140237-504af4d2178f
-	knative.dev/pkg v0.0.0-20260417155523-2b1e89838597
-	knative.dev/serving v0.48.1-0.20260419201526-1a28dadcd8dc
+	knative.dev/pkg v0.0.0-20260420135127-3cd6d6017a35
+	knative.dev/serving v0.48.1-0.20260420102226-4a744332fc99
 )
 
 require (
@@ -107,8 +107,8 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	k8s.io/apiextensions-apiserver v0.35.3 // indirect
-	k8s.io/apiserver v0.35.3 // indirect
+	k8s.io/apiextensions-apiserver v0.35.4 // indirect
+	k8s.io/apiserver v0.35.4 // indirect
 	k8s.io/klog/v2 v2.130.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20250910181357-589584f1c912 // indirect
 	k8s.io/utils v0.0.0-20251002143259-bc988d571ff4 // indirect
