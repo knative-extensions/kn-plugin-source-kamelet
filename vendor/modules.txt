@@ -326,7 +326,7 @@ go.yaml.in/yaml/v2
 # go.yaml.in/yaml/v3 v3.0.4
 ## explicit; go 1.16
 go.yaml.in/yaml/v3
-# golang.org/x/net v0.55.0
+# golang.org/x/net v0.56.0
 ## explicit; go 1.25.0
 golang.org/x/net/http/httpguts
 golang.org/x/net/http2
@@ -339,18 +339,18 @@ golang.org/x/net/internal/httpsfv
 ## explicit; go 1.25.0
 golang.org/x/oauth2
 golang.org/x/oauth2/internal
-# golang.org/x/sync v0.20.0
+# golang.org/x/sync v0.21.0
 ## explicit; go 1.25.0
 golang.org/x/sync/errgroup
-# golang.org/x/sys v0.45.0
+# golang.org/x/sys v0.46.0
 ## explicit; go 1.25.0
 golang.org/x/sys/plan9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
-# golang.org/x/term v0.43.0
+# golang.org/x/term v0.44.0
 ## explicit; go 1.25.0
 golang.org/x/term
-# golang.org/x/text v0.37.0
+# golang.org/x/text v0.38.0
 ## explicit; go 1.25.0
 golang.org/x/text/encoding
 golang.org/x/text/encoding/internal
@@ -899,7 +899,7 @@ knative.dev/client-pkg/pkg/sources/v1beta2
 knative.dev/client-pkg/pkg/util
 knative.dev/client-pkg/pkg/util/mock
 knative.dev/client-pkg/pkg/wait
-# knative.dev/eventing v0.49.1-0.20260611075324-69b976f7fd56
+# knative.dev/eventing v0.49.1-0.20260615165644-9a2ae8b2b023
 ## explicit; go 1.25.0
 knative.dev/eventing/pkg/apis/common/integration/v1alpha1
 knative.dev/eventing/pkg/apis/config
@@ -941,7 +941,7 @@ knative.dev/hack
 knative.dev/networking/pkg/apis/networking
 knative.dev/networking/pkg/apis/networking/v1alpha1
 knative.dev/networking/pkg/config
-# knative.dev/pkg v0.0.0-20260615142336-0f785e385ea0
+# knative.dev/pkg v0.0.0-20260615201544-6300c57a9e78
 ## explicit; go 1.25.0
 knative.dev/pkg/apis
 knative.dev/pkg/apis/duck
@@ -980,7 +980,7 @@ knative.dev/pkg/signals
 knative.dev/pkg/system
 knative.dev/pkg/system/testing
 knative.dev/pkg/tracker
-# knative.dev/serving v0.49.1-0.20260615142436-1683170667da
+# knative.dev/serving v0.49.1-0.20260615163344-394d3f959991
 ## explicit; go 1.25.0
 knative.dev/serving/pkg/apis/autoscaling
 knative.dev/serving/pkg/apis/autoscaling/v1alpha1
